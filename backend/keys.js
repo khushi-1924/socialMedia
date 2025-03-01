@@ -1,1 +1,0 @@
-const JWT_SECRET = 'pictaisbest'
