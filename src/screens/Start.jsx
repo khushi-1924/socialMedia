@@ -12,6 +12,7 @@ const Start = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setMessage("");
     const { emailORusername, password } = creds;
     const response = await fetch("http://localhost:3000/api/auth/loginUser", {
       method: "POST",
@@ -24,9 +25,9 @@ const Start = () => {
     console.log(json);
     if (json.success) {
       navigate("/home");
-      alert("Login successful");
+      alert(json.message);
     } else {
-      alert("Login failed");
+      alert(json.message);
     }
   };
 

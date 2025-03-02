@@ -27,9 +27,9 @@ const Signup = () => {
     // console.log(json);
     if (json.success) {
       navigate("/");
-      alert("Account created successfully");
+      alert(json.message);
     } else {
-      alert("Account creation failed");
+      alert(json.message);
     }
   };
 
@@ -121,7 +121,7 @@ const Signup = () => {
               type="submit"
               className="bg-sky-800 hover:bg-[#3c4974f2] text-white text-lg p-2 rounded-lg w-4/5 mt-4"
             >
-              Login
+              Create Account
             </button>
             <div className="text-sky-300 font-semibold mt-4 p-1 hover:underline hover:underline-offset-2 hover:cursor-pointer">
               <Link to="/">Already a User?</Link>

@@ -16,11 +16,12 @@ router.post('/createUser', [
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
+    let success = false;
     try {
         let user = await User.findOne ({email: req.body.email});
     if (user) {
         success = false;
-        return res.status(400).json({ success, error: 'user with this email already exists' });
+        return res.status(400).json({ success, message: 'user with this email already exists' });
     }
     
     const salt = await bcrypt.genSalt(10);
@@ -41,7 +42,7 @@ router.post('/createUser', [
 
     const authToken = jwt.sign(data, JWT_SECRET);
     success = true
-    res.json({success, authToken, user})
+    res.json({success, authToken, user, message: 'user created successfully'});
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Internal server error');
@@ -57,7 +58,7 @@ router.post('/loginUser', [
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-
+    let success = false;
     const {emailORusername, password} = req.body;
     try {
         let user = await User.findOne({
@@ -65,12 +66,12 @@ router.post('/loginUser', [
         });
         if (!user) {
             success = false;
-            return res.status(400).json({ success, error: 'user does not exist' });
+            return res.status(400).json({ success, message: 'user does not exist' });
         }
         const passCompare = await bcrypt.compare(password, user.password);
         if (!passCompare) {
             success = false;
-            return res.status(400).json ({ success, error: 'incorrect password' });
+            return res.status(400).json ({ success, message: 'incorrect password' });
         }
         const data = {
             user: {
@@ -79,7 +80,7 @@ router.post('/loginUser', [
         }
         const authToken = jwt.sign(data, JWT_SECRET);
         success = true;
-        return res.status(200).json({ success, authToken, user});
+        return res.status(200).json({ success, authToken, user, message: 'login successful' });
     } catch (err) {
         console.log(err.message);
         return res.status(500).send('internal server error')
