@@ -1,11 +1,16 @@
-import React from 'react'
+import React, { useState } from "react";
+import Card from "../components/Card";
+
 
 const Home = () => {
   return (
-    <div>
-      home
+    <div className="bg-slate-900 h-full w-full overflow-x-hidden">
+      <Card />
+      <Card />
+      <Card />
+      <Card />
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

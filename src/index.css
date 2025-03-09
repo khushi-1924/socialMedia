@@ -1,2 +1,21 @@
 @import "tailwindcss";
 
+/* For WebKit Browsers (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+    width: 10px; /* Scrollbar width */
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #1e293b; /* Dark gray track */
+    border-radius: 10px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #64748b; /* Gray thumb */
+    border-radius: 10px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #475569; /* Darker on hover */
+  }
+  

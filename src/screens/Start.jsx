@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 const Start = () => {
+  const [message, setMessage] = useState("");
   const [creds, setCreds] = useState({
     emailORusername: "",
     password: "",
