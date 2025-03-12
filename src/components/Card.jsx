@@ -25,15 +25,15 @@ const Card = () => {
     <div className="bg-slate-900 h-full w-full">
       <div className="bg-slate-900 h-full w-full">
         <div className="flex flex-col items-center justify-center h-full w-full">
-          <div className="bg-white h-3/4 w-3/4 rounded-xl flex items-center justify-between">
-            <div className="h-full w-1/2">
+          <div className="bg-white w-full md:w-1/2 h-3/4 rounded-xl flex flex-col md:flex-row overflow-visible shadow-lg md:shrink-0">
+            <div className="h-1/2 md:h-full w-full md:w-1/2">
               <img
                 src="https://i.ytimg.com/vi/Vp7nW2SP6H8/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDO2NDUjRyvSRoo-p3JlSMJ3t0tZw"
                 className="h-full w-full object-cover object-center rounded-l-xl"
                 alt=""
               />
             </div>
-            <div className="h-full w-1/2">
+            <div className="h-1/2 md:h-full w-full md:w-1/2">
               <div className="p-2 ml-1">
                 <div className="flex items-center justify-between p-2">
                   <div className="flex items-center">
