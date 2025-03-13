@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import heart from "../assets/heart.png";
-import heartLiked from "../assets/heart (1).png";
-import comment from "../assets/chat (1).png";
+import heartLiked from "../assets/heartLiked.png";
+import comment from "../assets/comment.png";
 import send from "../assets/send.png";
 
 const Card = () => {

@@ -5,6 +5,7 @@ import Start from "./screens/Start";
 import ForgetPassword from "./screens/ForgetPassword";
 import Signup from "./screens/Signup";
 import Home from "./screens/Home";
+import Profile from "./screens/Profile";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -18,6 +19,7 @@ function App() {
           <Route exact path="/forgot-password" element={<ForgetPassword />} />
           <Route exact path="/signup" element={<Signup />} />
           <Route exact path="/home" element={<Home />} />
+          <Route exact path="/profile" element={<Profile />} />
         </Routes>
         </div>
       </Router>
