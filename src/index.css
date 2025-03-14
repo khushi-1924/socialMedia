@@ -19,3 +19,6 @@
     background: #475569; /* Darker on hover */
   }
   
+body {
+  overflow-x: hidden;
+}

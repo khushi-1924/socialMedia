@@ -5,6 +5,7 @@ import add from "../assets/add.png";
 import search from "../assets/search.png";
 import hamburger from "../assets/hamburger.png";
 import close from "../assets/close.png";
+import message from "../assets/message.png";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
@@ -16,33 +17,51 @@ const Navbar = () => {
           <img src={logoName} className="h-12 w-28" alt="" />
         </div>
         <div className="h-16 hidden md:flex items-center justify-center mr-5">
-          <div class="relative group w-11 mx-5">
-            <img
-              src={search}
-              className="h-11 w-11 p-1 mx-5 transition duration-300 transform hover:scale-110 hover:outline-2 rounded-xl"
-              alt=""
-            />
-            <span className="absolute top-11 left-1/2 transform -translate-x-1 translate-y-2 opacity-0 group-hover:opacity-100 transition-opacity delay-400 duration-100 text-sm text-white bg-black px-2 py-1 rounded-lg text-center">
+          <div className="relative group w-11 mx-5">
+            <Link to="/message">
+              <img
+                src={message}
+                className="h-11 w-11 p-1 mx-5 transition duration-300 transform hover:scale-110 hover:outline-2 rounded-xl"
+                alt=""
+              />
+            </Link>
+            <span className="absolute top-11 left-1/2 transform -translate-x-1 translate-y-2 opacity-0 group-hover:opacity-100 transition-opacity delay-400 duration-100 text-sm text-white bg-black px-2 py-1 rounded-lg text-center z-10">
+              Message
+            </span>
+          </div>
+          <div className="relative group w-11 mx-5">
+            <Link to="/search">
+              <img
+                src={search}
+                className="h-11 w-11 p-1 mx-5 transition duration-300 transform hover:scale-110 hover:outline-2 rounded-xl"
+                alt=""
+              />
+            </Link>
+            <span className="absolute top-11 left-1/2 transform -translate-x-1 translate-y-2 opacity-0 group-hover:opacity-100 transition-opacity delay-400 duration-100 text-sm text-white bg-black px-2 py-1 rounded-lg text-center z-10">
               Search
             </span>
           </div>
-          <div class="relative group w-11 mx-5">
-            <img
-              src={add}
-              className="h-10 w-10 p-1 mx-5 transition duration-300 transform hover:scale-110 hover:outline-2 rounded-xl"
-              alt=""
-            />
-            <span className="absolute top-11 left-1/2 transform -translate-x-1 translate-y-2 opacity-0 group-hover:opacity-100 transition-opacity delay-400 duration-100 text-sm text-white bg-black px-2 py-1 rounded-lg text-center">
+          <div className="relative group w-11 mx-5">
+            <Link to="/addPost">
+              <img
+                src={add}
+                className="h-10 w-10 p-1 mx-5 transition duration-300 transform hover:scale-110 hover:outline-2 rounded-xl"
+                alt=""
+              />
+            </Link>
+            <span className="absolute top-11 left-1/2 transform -translate-x-1 translate-y-2 opacity-0 group-hover:opacity-100 transition-opacity delay-400 duration-100 text-sm text-white bg-black px-2 py-1 rounded-lg text-center z-10">
               Add
             </span>
           </div>
-          <div class="relative group w-11 mx-5">
-            <Link to='/profile'><img
-              src={user}
-              className="h-10 w-10 p-1 mx-5 transition duration-300 transform hover:scale-110 hover:outline-2 rounded-xl"
-              alt=""
-            /> </Link>
-            <span className="absolute top-11 left-1/2 transform -translate-x-1 translate-y-2 opacity-0 group-hover:opacity-100 transition-opacity delay-400 duration-100 text-sm text-white bg-black px-2 py-1 rounded-lg text-center">
+          <div className="relative group w-11 mx-5">
+            <Link to="/profile">
+              <img
+                src={user}
+                className="h-10 w-10 p-1 mx-5 transition duration-300 transform hover:scale-110 hover:outline-2 rounded-xl"
+                alt=""
+              />{" "}
+            </Link>
+            <span className="absolute top-11 left-1/2 transform -translate-x-1 translate-y-2 opacity-0 group-hover:opacity-100 transition-opacity delay-400 duration-100 text-sm text-white bg-black px-2 py-1 rounded-lg text-center z-10">
               Profile
             </span>
           </div>

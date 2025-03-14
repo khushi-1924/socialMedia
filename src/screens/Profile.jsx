@@ -1,9 +1,11 @@
 import React from "react";
+import Navbar from "../components/Navbar";
 
 const Profile = () => {
   return (
     <>
-    <div className="bg-slate-900 h-full w-full">
+    <Navbar />
+    <div className="bg-slate-900 min-h-screen w-full overflow-x-hidden">
       <div className="w-full h-40 bg-white flex items-center justify-center relative">
         <p className="ml-3 font-bold text-2xl">
           "Whoever is happy will make others happy."
@@ -34,11 +36,25 @@ const Profile = () => {
       </div>
       <div className="w-full flex justify-center">
       <div className="w-3/4 h-14 flex items-center justify-between">
-        <button className="p-2 mx-4 w-3/4 bg-blue-400 font-semibold text-lg rounded">Follow</button>
-        <button className="p-2 mx-4 w-3/4 outline-1 outline-white text-white font-semibold text-lg rounded">Message</button>
+        <button className="p-2 mx-4 w-3/4 bg-blue-400 trasition delay-100 hover:cursor-pointer hover:bg-blue-500 font-semibold text-lg rounded text-slate-900">Follow</button>
+        <button className="p-2 mx-4 w-3/4 outline-1 outline-white text-white trasition delay-100 hover:bg-sky-200 hover:text-slate-900 hover:cursor-pointer font-semibold text-lg rounded">Message</button>
+      </div>
+      </div>
+      <div>
+      <div className="mt-3 mb-1 w-full h-10 outline-1 outline-slate-800 text-center text-sky-200 flex justify-center items-center">
+        <p className="text-xl">Posts</p>
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-0.5 w-full max-w-screen overflow-hidden relative group">
+        <img src="https://i.ytimg.com/vi/Vp7nW2SP6H8/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDO2NDUjRyvSRoo-p3JlSMJ3t0tZw" className="w-full h-auto aspect-square object-cover" alt="" />
+        
+        <img src="https://i.ytimg.com/vi/Vp7nW2SP6H8/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDO2NDUjRyvSRoo-p3JlSMJ3t0tZw" className="w-full h-auto aspect-square object-cover" alt="" />
+        <img src="https://i.ytimg.com/vi/Vp7nW2SP6H8/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDO2NDUjRyvSRoo-p3JlSMJ3t0tZw" className="w-full h-auto aspect-square object-cover" alt="" />
+        <img src="https://i.ytimg.com/vi/Vp7nW2SP6H8/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDO2NDUjRyvSRoo-p3JlSMJ3t0tZw" className="w-full h-auto aspect-square object-cover" alt="" />
+        <img src="https://i.ytimg.com/vi/Vp7nW2SP6H8/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDO2NDUjRyvSRoo-p3JlSMJ3t0tZw" className="w-full h-auto aspect-square object-cover" alt="" />
       </div>
       </div>
     </div>
+    
     
     
     </>
