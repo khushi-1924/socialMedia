@@ -6,10 +6,16 @@ import search from "../assets/search.png";
 import hamburger from "../assets/hamburger.png";
 import close from "../assets/close.png";
 import message from "../assets/message.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import logout from "../assets/logout.png";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    navigate("/", { replace: true });
+  };
   return (
     <div>
       <div className="bg-[#d6e6ff] rounded-b-sm h-18 w-full flex items-center justify-between">
@@ -65,6 +71,17 @@ const Navbar = () => {
               Profile
             </span>
           </div>
+          <div className="relative group w-11 mx-5">
+            <img
+              src={logout}
+              className="h-10 w-10 p-1 mx-5 transition duration-300 transform hover:scale-110 hover:outline-2 rounded-xl"
+              alt=""
+              onClick={handleLogout}
+            />{" "}
+            <span className="absolute top-11 left-1/2 transform -translate-x-1 translate-y-2 opacity-0 group-hover:opacity-100 transition-opacity delay-400 duration-100 text-sm text-white bg-black px-2 py-1 rounded-lg text-center z-10">
+              Logout
+            </span>
+          </div>
         </div>
         <div className="block md:hidden">
           <button
@@ -112,6 +129,22 @@ const Navbar = () => {
                 alt="User"
               />
               <p className="text-xl font-semibold font-sans mx-2">Profile</p>
+            </div>
+            <div className="flex items-center">
+              <img
+                src={message}
+                className="h-7 w-7 p-1 my-2 transition duration-300 transform hover:scale-110"
+                alt="Message"
+              />
+              <p className="text-xl font-semibold font-sans mx-2">Messages</p>
+            </div>
+            <div className="flex items-center hover:bg-red-400">
+              <img
+                src={logout}
+                className="h-7 w-7 p-1 my-2 transition duration-300 transform hover:scale-110"
+                alt="Logout"
+              />
+              <p className="text-xl font-semibold font-sans mx-2">Logout</p>
             </div>
           </div>
         )}

@@ -1,15 +1,18 @@
-const multer = require('multer');
+import multer from "multer";
+import path from "path";
 
+// Configure multer disk storage
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, './public/temp')
-    },
-    filename: function (req, file, cb) {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-      cb(null, file.originalname)
-    }
-  })
-  
-export const upload = multer({ 
-    storage,
-})
+  destination: function (req, file, cb) {
+    cb(null, "./public/temp"); // Save to /public/temp
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + file.originalname;
+    cb(null, uniqueSuffix);
+  },
+});
+
+// Multer configuration
+export const upload = multer({
+  storage,
+});

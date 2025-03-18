@@ -23,9 +23,9 @@ const Start = () => {
       body: JSON.stringify({ emailORusername, password }),
     });
     const json = await response.json();
-    console.log(json);
     if (json.success) {
-      navigate("/home");
+      localStorage.setItem("authToken", json.authToken);
+      navigate("/home", { replace: true });
       alert(json.message);
     } else {
       alert(json.message);

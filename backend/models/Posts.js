@@ -1,13 +1,14 @@
 const mongoose = require('mongoose');
+const User = require('../models/User');
 const { Schema } = mongoose;
 
 const PostsSchema = new Schema({
     user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'user'
+        type: mongoose.Schema.Types.ObjectId, // Link to User
+        ref: "User", // Reference to User model
     },
     img: {
-        type: String,
+        type: Buffer,       
         required: true
     },
     caption: {
