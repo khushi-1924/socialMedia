@@ -71,7 +71,7 @@ const Navbar = () => {
               Profile
             </span>
           </div>
-          <div className="relative group w-11 mx-5">
+          <div className="relative group w-11 mx-5 hover:cursor-pointer">
             <img
               src={logout}
               className="h-10 w-10 p-1 mx-5 transition duration-300 transform hover:scale-110 hover:outline-2 rounded-xl"

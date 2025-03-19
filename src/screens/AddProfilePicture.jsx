@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import add from "../assets/add.png";
 
-const AddPost = () => {
+const AddProfilePicture = () => {
   const [caption, setCaption] = useState("");
   const [img, setImg] = useState(null);
   const [message, setMessage] = useState("");
@@ -126,4 +126,4 @@ const AddPost = () => {
   );
 };
 
-export default AddPost;
+export default AddProfilePicture;

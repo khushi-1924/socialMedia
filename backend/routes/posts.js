@@ -3,26 +3,26 @@ const router = express.Router();
 const Posts = require("../models/Posts");
 const fs = require("fs");
 const path = require("path");
+const { body, validationResult } = require('express-validator');
 const { upload } = require("../middleware/multerMiddleware"); // Import your middleware
+const fetchUser = require("../middleware/fetchUser");
 
 // Route 1: create a post using: POST '/api/posts/createPost'
-router.post("/createPost", upload.single("img"), async (req, res) => {
+router.post("/createPost", fetchUser, upload.single("img"), async (req, res) => {
   try {
-    if (!req.file) {
-      return res
-        .status(400)
-        .json({ success: false, message: "No image uploaded" });
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ success: false, message: "no image uploaded", errors: errors.array() });
     }
 
     // Read the file from disk
     const filePath = path.join(__dirname, "../public/temp", req.file.filename);
 
-    // Convert file to base64
-    // const imgData = fs.readFileSync(filePath).toString("base64");
+    // image saved as buffer
     const imgData = fs.readFileSync(filePath);
 
     const newPost = new Posts({
-      user: req.body.username, // Make sure this is a string (not ObjectId)
+      user: req.user.id, 
       caption: req.body.caption,
       img: imgData, // Store image as Buffer
       date: new Date(),
@@ -31,6 +31,17 @@ router.post("/createPost", upload.single("img"), async (req, res) => {
     // Save the post to MongoDB
     await newPost.save();
 
+    // delete from folder after 5secs
+    setTimeout(() => {
+      fs.unlink(req.file.path, (err) => {
+        if (err) {
+          console.error("Error deleting temp file:", err);
+        } else {
+          console.log("Temp file deleted successfully.");
+        }
+      });
+    }, 3000)
+    
     res.status(201).json({
       message: "Post created successfully",
       post: newPost,
