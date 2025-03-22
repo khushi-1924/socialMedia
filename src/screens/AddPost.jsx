@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import add from "../assets/add.png";
+import postContext from '../contexts/posts/PostContext'
 
 const AddPost = () => {
+  const context = useContext(postContext);
+  const { addPost, message, setMessage } = context;
   const [caption, setCaption] = useState("");
   const [img, setImg] = useState(null);
-  const [message, setMessage] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
 
   // Handle image selection
@@ -16,6 +18,13 @@ const AddPost = () => {
     }
   };
 
+  // reset form
+  const resetForm = () => {
+    setCaption("");
+    setImg(null);
+    setImagePreview(null);
+  };
+
   // Submit form data
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,36 +34,7 @@ const AddPost = () => {
       return;
     }
 
-    const formData = new FormData();
-    formData.append("caption", caption);
-    formData.append("img", img);
-
-    try {
-      const response = await fetch(
-        "http://localhost:3000/api/posts/createPost",
-        {
-          method: "POST",
-          headers : {
-            'auth-token' : localStorage.getItem('authToken')
-          },
-          body: formData,
-        }
-      );
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setMessage("Post created successfully! 🎉");
-        setCaption("");
-        setImg(null);
-        setImagePreview(null);
-      } else {
-        setMessage(data.error || "Failed to create post. Try again!");
-      }
-    } catch (error) {
-      console.error("Error creating post:", error);
-      setMessage("An error occurred while creating the post.");
-    }
+    addPost(caption, img, resetForm);
   };
 
   return (

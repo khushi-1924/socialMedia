@@ -55,13 +55,43 @@ router.post("/createPost", fetchUser, upload.single("img"), async (req, res) => 
 });
 
 // Route 2: get all posts using: GET '/api/posts/getPosts'
-router.get("/getPosts", async (req, res) => {
+router.get("/getPosts", fetchUser, async (req, res) => {
   try {
-    const posts = await Posts.find({});
-    res.status(200).json(posts);
+    const posts = await Posts.find({ user: req.user.id });
+
+    // Convert image buffer to base64 for each post
+    const postsWithBase64 = posts.map((post) => ({
+      ...post._doc,
+      img: `data:image/jpeg;base64,${post.img.toString("base64")}`,
+    }));
+
+    res.status(200).json(postsWithBase64);
   } catch (error) {
+    console.log(req.user);
     res.status(500).json({ error: "Failed to retrieve posts" });
   }
+  
 });
+
+// Route 3: delete post with id using: DELETE '/api/posts/deletePost'
+router.delete('/deletePost/:id', fetchUser, async(req,res)=>{
+  try {
+      //find the post to be deleted and delete it
+      let post = await Posts.findById(req.params.id);
+      if(!post) {
+          return res.status(404).send("Not found")
+      }
+
+      //allow deletion only if user owns this post
+      if(post.user.toString() !== req.user.id) {
+          return res.status(401).send("Not allowed")
+      }
+      post = await Posts.findByIdAndDelete (req.params.id)
+      res.json ({ "Success" : "Post has beend deleted successfully", post: post});
+  } catch (error) {
+      console.log(error.message);
+      res.status(500).send("Internal server error");
+  }
+})
 
 module.exports = router;

@@ -10,6 +10,7 @@ import Profile from "./screens/Profile";
 import Message from "./screens/Message";
 import Search from "./screens/Search";
 import AddPost from "./screens/AddPost";
+import PostState from "./contexts/posts/PostState";
 
 function App() {
   let navigate = useNavigate();
@@ -21,18 +22,24 @@ function App() {
 
   return (
     <>
+      <PostState>
         <div className="h-screen w-screen">
-        <Routes>
-          <Route exact path="/" element={<Start />} />
-          <Route exact path="/forgot-password" element={<ForgetPassword />} />
-          <Route exact path="/signup" element={<Signup />} />
-          <Route exact path="/home" element={localStorage.getItem("authToken") ? <Home /> : <Start />} />
-          <Route exact path="/profile" element={<Profile />} />
-          <Route exact path="/message" element={<Message /> } />
-          <Route exact path="/search" element={<Search />} />
-          <Route exact path="/addPost" element={<AddPost />} />
-        </Routes>
+          <Routes>
+            <Route exact path="/" element={<Start />} />
+            <Route exact path="/forgot-password" element={<ForgetPassword />} />
+            <Route exact path="/signup" element={<Signup />} />
+            <Route
+              exact
+              path="/home"
+              element={localStorage.getItem("authToken") ? <Home /> : <Start />}
+            />
+            <Route exact path="/profile" element={<Profile />} />
+            <Route exact path="/message" element={<Message />} />
+            <Route exact path="/search" element={<Search />} />
+            <Route exact path="/addPost" element={<AddPost />} />
+          </Routes>
         </div>
+      </PostState>
     </>
   );
 }
