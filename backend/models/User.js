@@ -9,6 +9,7 @@ const UserSchema = new Schema ({
     },
     email: {
         type: String,
+        unique: true,
         required: true
     },
     phone: {
@@ -22,6 +23,10 @@ const UserSchema = new Schema ({
     password: {
         type: String,
         required: true
+    },
+    profilePic: {
+        data: Buffer,
+        contentType: String
     }
 })
 

@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import user from '../assets/user.png';
 
 const Signup = () => {
   const [creds, setCreds] = useState({
@@ -10,6 +11,7 @@ const Signup = () => {
     username: "",
     phone: "",
     password: "",
+    profilePic: {user}
   });
   let navigate = useNavigate();
 
@@ -26,7 +28,7 @@ const Signup = () => {
     const json = await response.json();
     // console.log(json);
     if (json.success) {
-      navigate("/login");
+      navigate("/");
       alert(json.message);
     } else {
       alert(json.message);

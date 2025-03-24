@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import logoName from "../assets/logo-1.png";
-import user from "../assets/user.png";
+import profile from "../assets/profile.png";
 import add from "../assets/add.png";
 import search from "../assets/search.png";
 import hamburger from "../assets/hamburger.png";
@@ -62,7 +62,7 @@ const Navbar = () => {
           <div className="relative group w-11 mx-5">
             <Link to="/profile">
               <img
-                src={user}
+                src={profile}
                 className="h-10 w-10 p-1 mx-5 transition duration-300 transform hover:scale-110 hover:outline-2 rounded-xl"
                 alt=""
               />{" "}
@@ -124,7 +124,7 @@ const Navbar = () => {
             <hr />
             <div className="flex items-center">
               <img
-                src={user}
+                src={profile}
                 className="h-7 w-7 p-1 my-2 transition duration-300 transform hover:scale-110"
                 alt="User"
               />

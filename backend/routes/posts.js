@@ -4,7 +4,7 @@ const Posts = require("../models/Posts");
 const fs = require("fs");
 const path = require("path");
 const { body, validationResult } = require('express-validator');
-const { upload } = require("../middleware/multerMiddleware"); // Import your middleware
+const { upload } = require("../middleware/multerMiddleware");
 const fetchUser = require("../middleware/fetchUser");
 
 // Route 1: create a post using: POST '/api/posts/createPost'

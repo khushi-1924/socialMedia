@@ -1,26 +1,33 @@
 import React, { useEffect, useContext } from "react";
+import { Link } from 'react-router-dom';
 import Navbar from "../components/Navbar";
+import user from '../assets/user.png'
 import postContext from "../contexts/posts/PostContext";
+import userContext from "../contexts/users/UserContext";
 
 const Profile = () => {
   const context = useContext(postContext);
   const { posts, getPosts } = context;
+  const context1 = useContext(userContext);
+  const { user, getProfilePicUrl, getUserProfile } = context1; 
 
   useEffect(() => {
     getPosts();
   }, []);
 
+  console.log(getProfilePicUrl)
   return (
     <>
       <Navbar />
       <div className="bg-slate-900 min-h-screen w-full overflow-x-hidden">
+        <Link to='/profilePic'><button>click here</button></Link>
         <div className="w-full h-40 bg-white flex items-center justify-center relative">
           <p className="ml-3 font-bold text-2xl">
             "Whoever is happy will make others happy."
           </p>
           <div className="absolute top-24 z-1">
             <img
-              src="https://i.ytimg.com/vi/Vp7nW2SP6H8/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDO2NDUjRyvSRoo-p3JlSMJ3t0tZw"
+              src={getProfilePicUrl()}
               className="h-32 w-32 object-cover object-center rounded-full border-4 border-white"
               alt=""
             />
