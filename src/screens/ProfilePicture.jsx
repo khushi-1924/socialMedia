@@ -35,7 +35,7 @@ const ProfilePicture = () => {
   };
 
   return (
-    <div className="w-1/2 mx-auto p-4 bg-gray-800 rounded-md">
+    <div className="w-full mx-auto p-4 bg-gray-800 rounded-md">
       <h2 className="text-xl text-white mb-4">Profile</h2>
       {/* Show profile picture */}
       <img

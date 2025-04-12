@@ -145,9 +145,7 @@ router.get("/getUser", fetchUser, async (req, res) => {
     }
   });
   
-  
-
-// Route 4:  to Upload/Update Profile Picture using: PUT '/api/auth/updateProfilePic
+// Route 4: to Upload/Update Profile Picture using: PUT '/api/auth/updateProfilePic'
 router.put(
   "/updateProfilePic",
   fetchUser,
@@ -191,5 +189,22 @@ router.put(
     }
   }
 );
+
+// Route 5: to store the user preferences for their card page using: PUT '/api/auth/updatePreferences'
+router.put("/updatePreferences", fetchUser, async (req, res) => {
+  const { font, backgroundColor, text } = req.body;
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user.id,
+      { font, backgroundColor, text },
+      { new: true }
+    );
+    res.status(200).json({ user: updatedUser });
+  } catch (error) {
+    console.error("Error updating preferences:", error);
+    res.status(500).json({ error: "Failed to update preferences" });
+  }
+});
 
 module.exports = router;

@@ -13,7 +13,8 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
   const handleLogout = () => {
-    localStorage.removeItem("authToken");
+    // localStorage.removeItem("authToken");
+    localStorage.clear();
     navigate("/", { replace: true });
   };
   return (
@@ -60,7 +61,7 @@ const Navbar = () => {
             </span>
           </div>
           <div className="relative group w-11 mx-5">
-            <Link to="/profile">
+            <Link to="/profileUser">
               <img
                 src={profile}
                 className="h-10 w-10 p-1 mx-5 transition duration-300 transform hover:scale-110 hover:outline-2 rounded-xl"

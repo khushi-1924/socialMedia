@@ -13,6 +13,8 @@ import AddPost from "./screens/AddPost";
 import PostState from "./contexts/posts/PostState";
 import UserState from "./contexts/users/UserState";
 import ProfilePicture from "./screens/ProfilePicture";
+import ProfileUser from "./screens/ProfileUser";
+import EditProfile from "./screens/EditProfile";
 
 function App() {
   let navigate = useNavigate();
@@ -47,6 +49,8 @@ function App() {
               <Route exact path="/search" element={<Search />} />
               <Route exact path="/addPost" element={<AddPost />} />
               <Route exact path="/profilePic" element={<ProfilePicture />} />
+              <Route exact path="/profileUser" element={<ProfileUser />} />
+              <Route exact path="/editProfile" element={<EditProfile />} />
             </Routes>
           </div>
         </PostState>

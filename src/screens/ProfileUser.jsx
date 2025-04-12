@@ -1,28 +1,34 @@
 import React, { useEffect, useContext } from "react";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import user from '../assets/user.png'
+import user from "../assets/user.png";
 import postContext from "../contexts/posts/PostContext";
 import userContext from "../contexts/users/UserContext";
 
-const Profile = () => {
+const ProfileUser = () => {
   const context = useContext(postContext);
   const { posts, getPosts } = context;
   const context1 = useContext(userContext);
-  const { user, getProfilePicUrl, getUserProfile } = context1; 
+  const { user, getProfilePicUrl, getUserProfile } = context1;
+
+  const selectedFont = localStorage.getItem("selectedFont") || "Bungee Tint";
+  const selectedColor = localStorage.getItem("selectedColor") || "#FFB6C1";
+  const selectedText = localStorage.getItem("selectedText") || "Whoever is happy will make others happy!";
 
   useEffect(() => {
     getPosts();
   }, []);
 
-  console.log(getProfilePicUrl)
   return (
     <>
       <Navbar />
       <div className="bg-slate-900 min-h-screen w-full overflow-x-hidden">
-        <div className="w-full h-40 bg-white flex items-center justify-center relative">
-          <p className="ml-3 font-bold text-2xl">
-            "Whoever is happy will make others happy."
+        <div className="w-full h-40 bg-white flex items-center justify-center relative" style={{
+          backgroundColor: user?.backgroundColor || "#ffffff", // fallback if not set
+          fontFamily: user?.font || "sans-serif", // fallback font
+        }}>
+          <p className="font-bold text-2xl">
+          {user?.text || `"Whoever is happy will make others happy."`}
           </p>
           <div className="absolute top-24 z-1">
             <img
@@ -49,15 +55,12 @@ const Profile = () => {
             <p>Following</p>
           </div>
         </div>
-        <div className="w-full flex justify-center">
-          <div className="w-3/4 h-14 flex items-center justify-between">
-            <button className="p-2 mx-4 w-3/4 bg-blue-400 trasition delay-100 hover:cursor-pointer hover:bg-blue-500 font-semibold text-lg rounded text-slate-900">
-              Follow
+        <div className="w-full flex justify-center items-center">
+          <Link to="/editProfile">
+            <button className="p-2 mx-4 px-5 trasition delay-100 duration-200 hover:cursor-pointer hover:bg-slate-800 font-semibold text-white text-lg rounded border-2 border-white">
+              Edit Profile
             </button>
-            <button className="p-2 mx-4 w-3/4 outline-1 outline-white text-white trasition delay-100 hover:bg-sky-200 hover:text-slate-900 hover:cursor-pointer font-semibold text-lg rounded">
-              Message
-            </button>
-          </div>
+          </Link>
         </div>
         <div>
           <div className="mt-3 mb-1 w-full h-10 outline-1 outline-slate-800 text-center text-sky-200 flex justify-center items-center">
@@ -85,4 +88,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default ProfileUser;
