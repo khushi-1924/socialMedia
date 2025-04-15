@@ -1,12 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import PostContext from "./PostContext";
+import UserContext from "../users/UserContext"
 
 const PostState = (props) => {
+  const { user } = useContext(UserContext);
   const host = "http://localhost:3000";
 
   const postsInitial = [];
+  const myPostsInitial = [];
   const [posts, setPosts] = useState(postsInitial);
+  const [myPosts, setMyPosts] = useState(myPostsInitial);
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(true);
 
   // Function to get all posts
   const getPosts = async () => {
@@ -28,8 +33,35 @@ const PostState = (props) => {
       const json = await response.json();
   
       // No need to convert to base64, use directly
-      console.log(json); // Check if posts are coming properly
+      // console.log(json); // Check if posts are coming properly
       setPosts(json); // Set posts directly
+    } catch (error) {
+      console.error("Error fetching posts:", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Function to get all posts of logged in user
+  const getMyPosts = async () => {
+    // API call
+    try {
+      // API call
+      const response = await fetch(`${host}/api/posts/getMyPosts`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": localStorage.getItem("authToken"),
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to fetch posts");
+      }
+  
+      const json = await response.json();
+  
+      setMyPosts(json); // Set posts directly
     } catch (error) {
       console.error("Error fetching posts:", error.message);
     }
@@ -89,6 +121,16 @@ const PostState = (props) => {
     setNotes(newPosts);
   };
 
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+  
+    if (token) {
+      getPosts();
+    } else {
+      setPosts([]);
+    }
+  }, [user?._id]); // <- This will trigger only when logged-in user changes
+
   return (
     <PostContext.Provider
       value={{
@@ -96,9 +138,9 @@ const PostState = (props) => {
         setPosts,
         addPost,
         deletePost,
-        getPosts,
+        getPosts, myPosts, setMyPosts, getMyPosts,
         message,
-        setMessage,
+        setMessage, loading, setLoading,
       }}
     >
       {props.children}

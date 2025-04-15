@@ -7,28 +7,33 @@ import userContext from "../contexts/users/UserContext";
 
 const ProfileUser = () => {
   const context = useContext(postContext);
-  const { posts, getPosts } = context;
+  const { myPosts, getMyPosts } = context;
   const context1 = useContext(userContext);
   const { user, getProfilePicUrl, getUserProfile } = context1;
 
   const selectedFont = localStorage.getItem("selectedFont") || "Bungee Tint";
   const selectedColor = localStorage.getItem("selectedColor") || "#FFB6C1";
-  const selectedText = localStorage.getItem("selectedText") || "Whoever is happy will make others happy!";
+  const selectedText =
+    localStorage.getItem("selectedText") ||
+    "Whoever is happy will make others happy!";
 
   useEffect(() => {
-    getPosts();
+    getMyPosts();
   }, []);
 
   return (
     <>
       <Navbar />
       <div className="bg-slate-900 min-h-screen w-full overflow-x-hidden">
-        <div className="w-full h-40 bg-white flex items-center justify-center relative" style={{
-          backgroundColor: user?.backgroundColor || "#ffffff", // fallback if not set
-          fontFamily: user?.font || "sans-serif", // fallback font
-        }}>
+        <div
+          className="w-full h-40 flex items-center justify-center relative"
+          style={{
+            backgroundColor: user?.backgroundColor || "#ffffff", // fallback if not set
+            fontFamily: user?.font || "sans-serif", // fallback font
+          }}
+        >
           <p className="font-bold text-2xl">
-          {user?.text || `"Whoever is happy will make others happy."`}
+            {user?.text || `"Whoever is happy will make others happy."`}
           </p>
           <div className="absolute top-24 z-1">
             <img
@@ -37,21 +42,21 @@ const ProfileUser = () => {
               alt=""
             />
             <p className="mt-2 font-semibold text-2xl text-center font-mono text-white">
-              oreooo
+              {user?.username}
             </p>
           </div>
         </div>
         <div className="mt-32 w-full h-20 grid grid-cols-3 text-sky-200">
           <div className="text-center font-semibold text-lg">
-            <p>{posts.length}</p>
+            <p>{myPosts.length}</p>
             <p>Posts</p>
           </div>
           <div className="text-center font-semibold text-lg">
-            <p>50</p>
+            <p>{user?.followers?.length > 0 ? user.followers.length : 0}</p>
             <p>Followers</p>
           </div>
           <div className="text-center font-semibold text-lg">
-            <p>50</p>
+            <p>{user?.following?.length > 0 ? user.following.length : 0}</p>
             <p>Following</p>
           </div>
         </div>
@@ -67,19 +72,21 @@ const ProfileUser = () => {
             <p className="text-xl">Posts</p>
           </div>
           <div className=" my-1 grid grid-cols-2 md:grid-cols-5 gap-0.5 w-full max-w-screen overflow-hidden relative group">
-            {posts && posts.length > 0 ? (
-              posts.map((post, index) => (
+            {myPosts && myPosts.length > 0 ? (
+              myPosts.map((myPost, index) => (
                 <img
                   key={index}
-                  src={post.img} // Render image as base64
-                  alt={post.caption || "Post Image"}
+                  src={myPost.img} // Render image as base64
+                  alt={myPost.caption || "Post Image"}
                   className="w-full h-64 aspect-square object-contain object-center outline-1 outline-sky-200"
                 />
               ))
             ) : (
-              <p className="text-gray-400 text-center col-span-4">
-                No posts to display yet.
-              </p>
+              <div className="w-screen flex justify-center items-center">
+                <p className="text-gray-400 text-2xl p-5 text-center">
+                  No posts to display yet.
+                </p>
+              </div>
             )}
           </div>
         </div>

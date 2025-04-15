@@ -10,7 +10,7 @@ const EditProfile = () => {
       <EditCard />
       </div>
 
-      <div>
+      <div className="w-full mb-5">
         <ProfilePicture />
       </div>
     </div>

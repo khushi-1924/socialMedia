@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Posts = require("../models/Posts");
+const User = require("../models/User");
 const fs = require("fs");
 const path = require("path");
 const { body, validationResult } = require('express-validator');
@@ -54,16 +55,54 @@ router.post("/createPost", fetchUser, upload.single("img"), async (req, res) => 
   }
 });
 
-// Route 2: get all posts using: GET '/api/posts/getPosts'
-router.get("/getPosts", fetchUser, async (req, res) => {
+// Route 2: get my posts using: GET '/api/posts/getMyPosts'
+router.get("/getMyPosts", fetchUser, async (req, res) => {
   try {
-    const posts = await Posts.find({ user: req.user.id });
+    const posts = await Posts.find({ user: req.user.id }).populate("user", "-password").sort({ date: -1 });
 
     // Convert image buffer to base64 for each post
-    const postsWithBase64 = posts.map((post) => ({
-      ...post._doc,
-      img: `data:image/jpeg;base64,${post.img.toString("base64")}`,
-    }));
+    const postsWithBase64 = posts.map((post) => {
+    
+      return {
+        ...post._doc,
+        img: `data:image/jpeg;base64,${post.img.toString("base64")}`,
+        user: {
+          ...post.user._doc,
+        },
+      };
+    });
+    
+
+    res.status(200).json(postsWithBase64);
+  } catch (error) {
+    console.log(req.user);
+    res.status(500).json({ error: "Failed to retrieve posts" });
+  }
+  
+});
+// Route 3: get all posts using: GET '/api/posts/getPosts'
+router.get("/getPosts", fetchUser, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    const followingIds = user.following;
+    const posts = await Posts.find({ user: { $in: followingIds } }).populate("user", "-password").sort({ date: -1 });
+
+    // Convert image buffer to base64 for each post
+    const postsWithBase64 = posts.map((post) => {
+      const profilePic = post.user?.profilePic?.data
+        ? `data:${post.user.profilePic.contentType};base64,${post.user.profilePic.data.toString('base64')}`
+        : `http://localhost:3000/static/user.png`;
+    
+      return {
+        ...post._doc,
+        img: `data:image/jpeg;base64,${post.img.toString("base64")}`,
+        user: {
+          ...post.user._doc,
+          profilePic: profilePic,
+        },
+      };
+    });
+    
 
     res.status(200).json(postsWithBase64);
   } catch (error) {
@@ -73,7 +112,7 @@ router.get("/getPosts", fetchUser, async (req, res) => {
   
 });
 
-// Route 3: delete post with id using: DELETE '/api/posts/deletePost'
+// Route 4: delete post with id using: DELETE '/api/posts/deletePost'
 router.delete('/deletePost/:id', fetchUser, async(req,res)=>{
   try {
       //find the post to be deleted and delete it

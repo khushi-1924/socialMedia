@@ -1,37 +1,41 @@
-import React, { useEffect, useContext } from "react";
-import { Link } from 'react-router-dom';
+import React, { useEffect, useContext, useState } from "react";
+import { Link, useParams } from 'react-router-dom';
 import Navbar from "../components/Navbar";
 import user from '../assets/user.png'
-import postContext from "../contexts/posts/PostContext";
-import userContext from "../contexts/users/UserContext";
+import PostContext from "../contexts/posts/PostContext";
+import UserContext from "../contexts/users/UserContext";
 
 const Profile = () => {
-  const context = useContext(postContext);
+  const { id } = useParams();
+  const context = useContext(PostContext);
   const { posts, getPosts } = context;
-  const context1 = useContext(userContext);
-  const { user, getProfilePicUrl, getUserProfile } = context1; 
+  const context1 = useContext(UserContext);
+  const { user, getProfilePicUrl, getUserProfile, targetUser, isFollowing, handleFollowToggle } = context1; 
 
   useEffect(() => {
     getPosts();
+    console.log(targetUser)
   }, []);
 
-  console.log(getProfilePicUrl)
   return (
     <>
       <Navbar />
       <div className="bg-slate-900 min-h-screen w-full overflow-x-hidden">
-        <div className="w-full h-40 bg-white flex items-center justify-center relative">
-          <p className="ml-3 font-bold text-2xl">
-            "Whoever is happy will make others happy."
+        <div className="w-full h-40 flex items-center justify-center relative" style={{
+          backgroundColor: targetUser?.backgroundColor || "#ffffff", // fallback if not set
+          fontFamily: targetUser?.font || "sans-serif", // fallback font
+        }}> 
+          <p className="font-bold text-2xl">
+          {targetUser?.text || `"Whoever is happy will make others happy."`}
           </p>
           <div className="absolute top-24 z-1">
             <img
-              src={getProfilePicUrl()}
+              src={targetUser?.profilePic}
               className="h-32 w-32 object-cover object-center rounded-full border-4 border-white"
               alt=""
             />
             <p className="mt-2 font-semibold text-2xl text-center font-mono text-white">
-              oreooo
+            {targetUser?.username}
             </p>
           </div>
         </div>
@@ -51,9 +55,16 @@ const Profile = () => {
         </div>
         <div className="w-full flex justify-center">
           <div className="w-3/4 h-14 flex items-center justify-between">
-            <button className="p-2 mx-4 w-3/4 bg-blue-400 trasition delay-100 hover:cursor-pointer hover:bg-blue-500 font-semibold text-lg rounded text-slate-900">
-              Follow
+          {isFollowing ? (
+            <button className="p-2 mx-4 w-3/4 bg-red-400 trasition delay-100 hover:cursor-pointer hover:bg-red-500 font-semibold text-lg rounded text-slate-900" onClick={handleFollowToggle}>
+            Unfollow
+       </button>
+          ) : (
+            <button className="p-2 mx-4 w-3/4 bg-blue-400 trasition delay-100 hover:cursor-pointer hover:bg-blue-500 font-semibold text-lg rounded text-slate-900" onClick={handleFollowToggle}>
+                 Follow
             </button>
+          )}
+            
             <button className="p-2 mx-4 w-3/4 outline-1 outline-white text-white trasition delay-100 hover:bg-sky-200 hover:text-slate-900 hover:cursor-pointer font-semibold text-lg rounded">
               Message
             </button>

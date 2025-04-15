@@ -5,7 +5,10 @@ import userImg from "../../assets/user.png"; // Import default image
 const UserState = (props) => {
   const host = "http://localhost:3000";
   const [user, setUser] = useState(null);
+  const [targetUser, setTargetUser] = useState(null);
+  const [isFollowing, setIsFollowing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [results, setResults] = useState([]);
 
   // Get User Data (Fetch Profile)
   const getUserProfile = async () => {
@@ -30,16 +33,8 @@ const UserState = (props) => {
     }
   };
 
-  const [selectedFont, setSelectedFont] = useState(user?.font || localStorage.getItem("selectedFont"));
-  const [selectedColor, setSelectedColor] = useState(
-    user?.backgroundColor || localStorage.getItem("selectedColor")
-  );
-  const [selectedText, setSelectedText] = useState(
-    user?.text || localStorage.getItem("selectedText")
-  );
-
   // Upload/Update Profile Picture
-  const updateProfilePic = async (profilePic, resetForm) => {
+  const updateProfilePic = async (profilePic) => {
     const formData = new FormData();
     formData.append("profilePic", profilePic);
 
@@ -57,7 +52,7 @@ const UserState = (props) => {
         // Update user state with new profilePic
         setUser(data.user);
         console.log("Profile picture updated successfully!");
-        resetForm(); // Reset form if required
+        // resetForm(); // Reset form if required
       } else {
         console.error("Failed to update profile picture:", data.error);
       }
@@ -75,6 +70,33 @@ const UserState = (props) => {
     return userImg; // Default image from assets
   };
 
+  // Handling the follow and unfollow logic
+  const handleFollowToggle = async () => {
+    try {
+      const endpoint = isFollowing
+        ? `${host}/api/auth/unfollow/${targetUser._id}`
+        : `${host}/api/auth/follow/${targetUser._id}`;
+  
+      const response = await fetch(endpoint, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": localStorage.getItem("authToken"),
+        },
+      });
+  
+      if (response.ok) {
+        const updatedUser = await response.json();
+        setIsFollowing(!isFollowing);
+      } else {
+        console.error("Failed to toggle follow");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+  
+  // Save card preferences
   const savePreferences = async (font, backgroundColor, text) => {
     const response = await fetch(`${host}/api/auth/updatePreferences`, {
       method: "PUT",
@@ -94,10 +116,44 @@ const UserState = (props) => {
     }
   };
 
+  // Fetch users on search
+  const fetchUsers = async (query) => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${host}/api/auth/searchUsers?query=${query}`);
+      const data = await res.json();
+      setResults(data.users);
+    } catch (err) {
+      console.error("Search error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const [selectedFont, setSelectedFont] = useState("");
+  const [selectedColor, setSelectedColor] = useState("");
+  const [selectedText, setSelectedText] = useState("");
+
   // Load user data on initial load
   useEffect(() => {
     getUserProfile();
   }, []);
+
+  useEffect(() => {
+    setSelectedFont(user?.font || localStorage.getItem("selectedFont"));
+    setSelectedColor(
+      user?.backgroundColor || localStorage.getItem("selectedColor")
+    );
+    setSelectedText(user?.text || localStorage.getItem("selectedText"));
+  }, [user]);
+
+  useEffect(() => {
+    if (user && targetUser) {
+      const following = user.following.includes(targetUser._id);
+      setIsFollowing(following);
+    }
+  }, [user, targetUser]);
+
 
   return (
     <UserContext.Provider
@@ -114,6 +170,7 @@ const UserState = (props) => {
         setSelectedColor,
         setSelectedText,
         savePreferences,
+        targetUser, setTargetUser, handleFollowToggle, isFollowing, setIsFollowing, results, setResults, fetchUsers
       }}
     >
       {props.children}

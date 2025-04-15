@@ -41,7 +41,6 @@ const AddPost = () => {
     <div className="w-full h-full bg-slate-900 p-8">
       <div className="w-1/4 mx-auto p-6 rounded-lg outline-2 outline-sky-300 shadow-md">
         
-
         {message && (
           <div
             className={`mb-4 p-2 ${

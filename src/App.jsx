@@ -44,7 +44,7 @@ function App() {
                   localStorage.getItem("authToken") ? <Home /> : <Start />
                 }
               />
-              <Route exact path="/profile" element={<Profile />} />
+              <Route exact path="/profile/:id" element={<Profile />} />
               <Route exact path="/message" element={<Message />} />
               <Route exact path="/search" element={<Search />} />
               <Route exact path="/addPost" element={<AddPost />} />

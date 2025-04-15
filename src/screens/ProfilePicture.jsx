@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import userContext from "../contexts/users/UserContext";
 
 const ProfilePicture = () => {
-  const context = useContext(userContext)
+  const context = useContext(userContext);
   const { user, updateProfilePic, getProfilePicUrl } = context;
   const [profilePic, setProfilePic] = useState(null);
   const [preview, setPreview] = useState("");
@@ -25,40 +25,63 @@ const ProfilePicture = () => {
   // Submit form data
   const handleSubmit = async (e) => {
     e.preventDefault();
+    alert('profile picture updated successfully!')
 
     if (!profilePic) {
       setMessage("Please select an image to upload.");
       return;
     }
 
-    updateProfilePic(profilePic, resetForm)
+    updateProfilePic(profilePic);
   };
 
   return (
-    <div className="w-full mx-auto p-4 bg-gray-800 rounded-md">
-      <h2 className="text-xl text-white mb-4">Profile</h2>
+    <div className="w-full flex items-center justify-center">
+    <div className="w-1/2 mx-auto p-4 bg-gray-800 rounded-md">
       {/* Show profile picture */}
       <img
         src={preview || getProfilePicUrl()}
         alt="Profile"
-        className="w-32 h-32 rounded-full mx-auto mb-4"
+        className="w-48 h-48 rounded-full mx-auto mb-4 border border-amber-50"
       />
       {/* Upload New Profile Picture */}
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Image Upload */}
         <input
           type="file"
           accept="image/*"
           onChange={handleImageChange}
-          className="block w-full text-white"
+          id="fileInput"
+          name="img"
+          className="hidden"
+          required
         />
+        <label
+          htmlFor="fileInput"
+          className={`h-52 flex items-center justify-center w-full p-2 border border-gray-300 rounded cursor-pointer bg-gray-700 hover:bg-gray-600 transition ${
+            preview ? "p-0" : ""}`
+}
+          style={{
+            backgroundImage: "none",
+            backgroundSize: "contain",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+            height: "52px", // Set desired height
+            width: "auto", // Set desired width (auto or fixed)
+          }}
+        >
+          change profile picture
+        </label>
+
+        {/* Submit Button */}
         <button
           type="submit"
-          className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition"
+          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition hover:cursor-pointer"
         >
-          Upload Profile Picture
+          update profile picture
         </button>
       </form>
-      <p className="text-white mt-4">Welcome, {user?.name || "User"}!</p>
+      </div>
     </div>
   );
 };

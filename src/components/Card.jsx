@@ -1,10 +1,15 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import heart from "../assets/heart.png";
 import heartLiked from "../assets/heartLiked.png";
 import comment from "../assets/comment.png";
 import send from "../assets/send.png";
+import UserContext from "../contexts/users/UserContext"
 
-const Card = () => {
+const Card = ({ post }) => {
+  const navigate = useNavigate();
+  const { setTargetUser } = useContext(UserContext);
   const [like, setLike] = useState(false);
   const [follow, setFollow] = useState(false);
   const likeOnClick = () => {
@@ -17,19 +22,22 @@ const Card = () => {
     if (textAreaRef.current)
         textAreaRef.current.focus();
   };
+  const handleUserClick = () => {
+    setTargetUser(post.user); // sets the clicked user
+    navigate("/profile");     // navigate to profile page
+  };
   const followOnClick = (e) => {
     console.log("Follow Clicked");
     setFollow(!follow);
   }
   return (
     <div className="bg-slate-900 h-full w-full">
-      <div className="bg-slate-900 h-full w-full">
         <div className="flex flex-col items-center justify-center h-full w-full">
-          <div className="bg-white w-full md:w-1/2 h-3/4 rounded-xl flex flex-col md:flex-row overflow-visible shadow-lg md:shrink-0">
+          <div className="bg-amber-50 w-full md:w-1/2 h-[400px] rounded-xl flex flex-col md:flex-row overflow-visible shadow-lg md:shrink-0 divide-x divide-yellow-200">
             <div className="h-1/2 md:h-full w-full md:w-1/2">
               <img
-                src="https://i.ytimg.com/vi/Vp7nW2SP6H8/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDO2NDUjRyvSRoo-p3JlSMJ3t0tZw"
-                className="h-full w-full object-cover object-center rounded-l-xl"
+                src={post.img}
+                className="h-full w-full object-contain object-center rounded-l-xl"
                 alt=""
               />
             </div>
@@ -38,11 +46,11 @@ const Card = () => {
                 <div className="flex items-center justify-between p-2">
                   <div className="flex items-center">
                     <img
-                      src="https://i.ytimg.com/vi/Vp7nW2SP6H8/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDO2NDUjRyvSRoo-p3JlSMJ3t0tZw"
+                      src={post.user.profilePic}
                       className="h-12 w-12 object-cover object-center rounded-full"
                       alt=""
                     />
-                    <p className="ml-3 font-bold text-xl font-mono">oreooo</p>
+                    <p className="ml-3 font-bold text-xl font-mono hover:underline hover:underline-offset-2 cursor-pointer" onClick={handleUserClick}>{post.user.username}</p>
                   </div>
                   <div>
                     <button className="rounded-lg py-2 px-4 outline-2 mr-5 hover:cursor-pointer hover:bg-blue-500 hover:outline-blue-600 hover:text-white duration-300" onClick={followOnClick}>
@@ -51,11 +59,11 @@ const Card = () => {
                   </div>
                 </div>
                 <div className="p-2">
-                  <p className="font-serif text-lg">Hi Guyss!! I'm Oreo</p>
+                  <p className="font-serif text-lg">{post.caption}</p>
                   <span className="mr-5 text-sm text-slate-500">
-                    08-03-2025
+                    {post.date.substring(0,10)}
                   </span>
-                  <span className="text-sm text-slate-500">15:53pm</span>
+                  <span className="text-sm text-slate-500">{post.date.substring(11,16)}</span>
                 </div>
                 <div className="ml-2 p-1 flex items-center">
                   <img
@@ -92,7 +100,6 @@ const Card = () => {
           </div>
         </div>
       </div>
-    </div>
   );
 };
 

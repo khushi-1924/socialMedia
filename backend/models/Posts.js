@@ -5,7 +5,8 @@ const { Schema } = mongoose;
 const PostsSchema = new Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId, // Link to User
-        ref: "User", // Reference to User model
+        ref: 'User', // Reference to User model
+        required: true
     },
     img: {
         type: Buffer,       

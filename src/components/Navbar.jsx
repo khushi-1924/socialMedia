@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import logoName from "../assets/logo-1.png";
 import profile from "../assets/profile.png";
 import add from "../assets/add.png";
@@ -8,20 +8,23 @@ import close from "../assets/close.png";
 import message from "../assets/message.png";
 import { Link, useNavigate } from "react-router-dom";
 import logout from "../assets/logout.png";
+import postContext from "../contexts/posts/PostContext";
 
 const Navbar = () => {
+  const { setPosts } = useContext(postContext);
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
   const handleLogout = () => {
     // localStorage.removeItem("authToken");
     localStorage.clear();
+    setPosts([]);
     navigate("/", { replace: true });
   };
   return (
     <div>
       <div className="bg-[#d6e6ff] rounded-b-sm h-18 w-full flex items-center justify-between">
         <div className="flex h-16 items-center mx-5">
-          <img src={logoName} className="h-12 w-28" alt="" />
+          <Link to='/home'><img src={logoName} className="h-12 w-28" alt="" /></Link>
         </div>
         <div className="h-16 hidden md:flex items-center justify-center mr-5">
           <div className="relative group w-11 mx-5">

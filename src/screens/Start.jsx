@@ -26,6 +26,7 @@ const Start = () => {
     if (json.success) {
       localStorage.setItem("authToken", json.authToken);
       navigate("/home", { replace: true });
+      window.location.reload();
       alert(json.message);
     } else {
       alert(json.message);

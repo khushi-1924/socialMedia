@@ -50,9 +50,9 @@ router.post(
         username: req.body.username,
         password: secPass,
         profilePicture: {
-            data: defaultProfilePic,
-            contentType: "image/*",
-        }
+          data: defaultProfilePic,
+          contentType: "image/*",
+        },
       });
       const data = {
         user: {
@@ -123,28 +123,33 @@ router.post(
 
 // Route 3: Get logged-in user details using: GET '/api/auth/getUser'
 router.get("/getUser", fetchUser, async (req, res) => {
-    try {
-      const userId = req.user.id;
-      const user = await User.findById(userId).select("-password");
-  
-      // Check if user and profilePic exist
-      if (user && user.profilePic && user.profilePic.data) {
-        // Convert profilePic buffer to base64
-        const base64ProfilePic = `data:${user.profilePic.contentType};base64,${user.profilePic.data.toString(
-          "base64"
-        )}`;
-  
-        // Attach the base64 string to the user object
-        user._doc.profilePic = base64ProfilePic;
-      }
-  
-      res.status(200).json({ user });
-    } catch (error) {
-      console.error(error.message);
-      res.status(500).send("Internal Server Error");
+  try {
+    const userId = req.user.id;
+    const user = await User.findById(userId)
+      .select("-password")
+      .populate("followers", "name profilePic") // populate with selected fields
+      .populate("following", "name profilePic");
+    // Check if user and profilePic exist
+    if (user && user.profilePic && user.profilePic.data) {
+      // Convert profilePic buffer to base64
+      const base64ProfilePic = `data:${
+        user.profilePic.contentType
+      };base64,${user.profilePic.data.toString("base64")}`;
+
+      // Attach the base64 string to the user object
+      user._doc.profilePic = base64ProfilePic;
     }
-  });
-  
+
+    const { font, backgroundColor, text } = user;
+    user._doc.preferences = { font, backgroundColor, text };
+
+    res.status(200).json({ user });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 // Route 4: to Upload/Update Profile Picture using: PUT '/api/auth/updateProfilePic'
 router.put(
   "/updateProfilePic",
@@ -206,5 +211,92 @@ router.put("/updatePreferences", fetchUser, async (req, res) => {
     res.status(500).json({ error: "Failed to update preferences" });
   }
 });
+
+// Route 6: to follow a user using: PUT '/api/auth/follow/:id'
+router.put("/follow/:id", fetchUser, async (req, res) => {
+  try {
+    const targetUser = await User.findById(req.params.id);
+    const currentUser = await User.findById(req.user.id);
+
+    if (!targetUser || !currentUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Prevent double follow
+    if (!targetUser.followers.includes(currentUser._id)) {
+      targetUser.followers.push(currentUser._id);
+      currentUser.following.push(targetUser._id);
+
+      await targetUser.save();
+      await currentUser.save();
+
+      return res.status(200).json({ success: "User followed!" });
+    } else {
+      return res.status(400).json({ error: "Already following user" });
+    }
+  } catch (err) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// Route 7: to unfollow a user using: PUT '/api/auth/unfollow/:id'
+router.put("/unfollow/:id", fetchUser, async (req, res) => {
+  try {
+    const targetUser = await User.findById(req.params.id);
+    const currentUser = await User.findById(req.user.id);
+
+    if (!targetUser || !currentUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    targetUser.followers = targetUser.followers.filter(
+      (id) => id.toString() !== currentUser._id.toString()
+    );
+    currentUser.following = currentUser.following.filter(
+      (id) => id.toString() !== targetUser._id.toString()
+    );
+
+    await targetUser.save();
+    await currentUser.save();
+
+    return res.status(200).json({ success: "User unfollowed!" });
+  } catch (err) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// Route 8: to search users using: GET '/api/auth/searchUsers'
+router.get("/searchUsers", async (req, res) => {
+  const query = req.query.query;
+  try {
+    const users = await User.find({
+      $or: [
+        { name: { $regex: query, $options: "i" } },
+        { username: { $regex: query, $options: "i" } },
+      ],
+    })
+      .select("-password")
+      .limit(10); // Limit to 10 results
+
+      const formattedUsers = users.map((user) => {
+        let profilePic = null;
+        if (user.profilePic && user.profilePic.data) {
+          const profilePic = user?.profilePic?.data
+        ? `data:${user.profilePic.contentType};base64,${user.profilePic.data.toString('base64')}`
+        : `http://localhost:3000/static/user.png`;
+        }
+        return {
+          _id: user._id,
+          username: user.username,
+          profilePic: profilePic,
+        };
+      });
+  
+      res.status(200).json({ users: formattedUsers });
+  } catch (error) {
+    console.log("search error: ", error.message);
+    res.status(500).json({ error: "internal server error"})
+  }
+})
 
 module.exports = router;
