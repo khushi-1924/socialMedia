@@ -22,9 +22,9 @@ const Card = ({ post }) => {
     if (textAreaRef.current)
         textAreaRef.current.focus();
   };
-  const handleUserClick = () => {
+  const handleUserClick = (user) => {
     setTargetUser(post.user); // sets the clicked user
-    navigate("/profile");     // navigate to profile page
+    navigate(`/profile/${user._id}`);     // navigate to profile page
   };
   const followOnClick = (e) => {
     console.log("Follow Clicked");
@@ -50,7 +50,7 @@ const Card = ({ post }) => {
                       className="h-12 w-12 object-cover object-center rounded-full"
                       alt=""
                     />
-                    <p className="ml-3 font-bold text-xl font-mono hover:underline hover:underline-offset-2 cursor-pointer" onClick={handleUserClick}>{post.user.username}</p>
+                    <p className="ml-3 font-bold text-xl font-mono hover:underline hover:underline-offset-2 cursor-pointer" onClick={()=>handleUserClick(post.user)}>{post.user.username}</p>
                   </div>
                   <div>
                     <button className="rounded-lg py-2 px-4 outline-2 mr-5 hover:cursor-pointer hover:bg-blue-500 hover:outline-blue-600 hover:text-white duration-300" onClick={followOnClick}>

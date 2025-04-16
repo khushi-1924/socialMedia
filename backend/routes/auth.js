@@ -276,27 +276,35 @@ router.get("/searchUsers", async (req, res) => {
       ],
     })
       .select("-password")
+      .lean()
       .limit(10); // Limit to 10 results
 
-      const formattedUsers = users.map((user) => {
-        let profilePic = null;
-        if (user.profilePic && user.profilePic.data) {
-          const profilePic = user?.profilePic?.data
-        ? `data:${user.profilePic.contentType};base64,${user.profilePic.data.toString('base64')}`
-        : `http://localhost:3000/static/user.png`;
-        }
-        return {
-          _id: user._id,
-          username: user.username,
-          profilePic: profilePic,
-        };
-      });
-  
-      res.status(200).json({ users: formattedUsers });
+    const formattedUsers = users.map((user) => {
+      let profilePic = null;
+      if (user.profilePic && user.profilePic.data) {
+        profilePic = user?.profilePic?.data
+          ? `data:${
+              user.profilePic.contentType
+            };base64,${user.profilePic.data.toString("base64")}`
+          : `http://localhost:3000/static/user.png`;
+      }
+      return {
+        _id: user._id,
+        username: user.username,
+        profilePic: profilePic,
+        backgroundColor: user.backgroundColor || "#000000",
+        font: user.font || "sans-serif",
+        text: user.text || "Hello there!",
+        followers: user.followers || [],
+        following: user.following || [],
+      };
+    });
+
+    res.status(200).json({ users: formattedUsers });
   } catch (error) {
     console.log("search error: ", error.message);
-    res.status(500).json({ error: "internal server error"})
+    res.status(500).json({ error: "internal server error" });
   }
-})
+});
 
 module.exports = router;

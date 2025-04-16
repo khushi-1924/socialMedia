@@ -4,18 +4,36 @@ import Navbar from "../components/Navbar";
 import user from '../assets/user.png'
 import PostContext from "../contexts/posts/PostContext";
 import UserContext from "../contexts/users/UserContext";
+import Card from "../components/Card";
 
 const Profile = () => {
-  const { id } = useParams();
+  // const { id } = useParams();
   const context = useContext(PostContext);
-  const { posts, getPosts } = context;
+  const { posts, getPosts, getTargetUserPosts, targetUserPosts } = context;
   const context1 = useContext(UserContext);
-  const { user, getProfilePicUrl, getUserProfile, targetUser, isFollowing, handleFollowToggle } = context1; 
+  const { user, getTargetUserProfilePicUrl, targetUser, isFollowing, setIsFollowing, handleFollowToggle } = context1; 
+
+
+  const postClick = (post) => {
+    <Card post={post} />
+  }
 
   useEffect(() => {
     getPosts();
     console.log(targetUser)
   }, []);
+
+  useEffect(() => {
+    getTargetUserPosts(targetUser?._id);
+  }, [targetUser]);
+
+  useEffect(() => {
+      console.log("Running useEffect");
+      if (user && targetUser) {
+        setIsFollowing(user.following.includes(targetUser._id));
+        console.log(isFollowing);
+      }
+    }, [user, targetUser]);
 
   return (
     <>
@@ -30,7 +48,7 @@ const Profile = () => {
           </p>
           <div className="absolute top-24 z-1">
             <img
-              src={targetUser?.profilePic}
+              src={getTargetUserProfilePicUrl()}
               className="h-32 w-32 object-cover object-center rounded-full border-4 border-white"
               alt=""
             />
@@ -41,26 +59,26 @@ const Profile = () => {
         </div>
         <div className="mt-32 w-full h-20 grid grid-cols-3 text-sky-200">
           <div className="text-center font-semibold text-lg">
-            <p>{posts.length}</p>
+            <p>{targetUserPosts.length}</p>
             <p>Posts</p>
           </div>
           <div className="text-center font-semibold text-lg">
-            <p>50</p>
+            <p>{targetUser?.followers?.length}</p>
             <p>Followers</p>
           </div>
           <div className="text-center font-semibold text-lg">
-            <p>50</p>
+            <p>{targetUser?.following?.length}</p>
             <p>Following</p>
           </div>
         </div>
         <div className="w-full flex justify-center">
           <div className="w-3/4 h-14 flex items-center justify-between">
           {isFollowing ? (
-            <button className="p-2 mx-4 w-3/4 bg-red-400 trasition delay-100 hover:cursor-pointer hover:bg-red-500 font-semibold text-lg rounded text-slate-900" onClick={handleFollowToggle}>
+            <button className="p-2 mx-4 w-3/4 bg-red-400 transition delay-100 hover:cursor-pointer hover:bg-red-500 font-semibold text-lg rounded text-slate-900" onClick={()=>handleFollowToggle(targetUser._id)}>
             Unfollow
        </button>
           ) : (
-            <button className="p-2 mx-4 w-3/4 bg-blue-400 trasition delay-100 hover:cursor-pointer hover:bg-blue-500 font-semibold text-lg rounded text-slate-900" onClick={handleFollowToggle}>
+            <button className="p-2 mx-4 w-3/4 bg-blue-400 transition delay-100 hover:cursor-pointer hover:bg-blue-500 font-semibold text-lg rounded text-slate-900" onClick={()=>handleFollowToggle(targetUser._id)}>
                  Follow
             </button>
           )}
@@ -75,13 +93,14 @@ const Profile = () => {
             <p className="text-xl">Posts</p>
           </div>
           <div className=" my-1 grid grid-cols-2 md:grid-cols-5 gap-0.5 w-full max-w-screen overflow-hidden relative group">
-            {posts && posts.length > 0 ? (
-              posts.map((post, index) => (
+            {targetUserPosts && targetUserPosts.length > 0 ? (
+              targetUserPosts.map((post, index) => (
                 <img
                   key={index}
                   src={post.img} // Render image as base64
                   alt={post.caption || "Post Image"}
                   className="w-full h-64 aspect-square object-contain object-center outline-1 outline-sky-200"
+                  onClick={()=>postClick(post)}
                 />
               ))
             ) : (

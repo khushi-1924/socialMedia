@@ -1,26 +1,26 @@
 import React, { useState, useEffect, useContext } from "react";
 import UserContext from "../contexts/users/UserContext";
 import { useNavigate } from "react-router-dom";
+import userImg from '../assets/user.png'
 
 const Search = () => {
   const navigate = useNavigate();
   const context = useContext(UserContext);
-  const { results, setResults, fetchUsers, loading, targetUser, setTargetUser } = context;
+  const { user, results, setResults, fetchUsers, loading, targetUser, setTargetUser } = context;
   const [query, setQuery] = useState("");
 
-  const onSearchClick = (user) => {
-    setTargetUser(user);
-    navigate(`/profile/${user._id}`);
+  const onSearchClick = (clickedUser) => {
+    setTargetUser(clickedUser);
+    if (clickedUser._id === user._id) {
+      navigate('/profileUser')
+    }
+    else
+      navigate(`/profile/${clickedUser._id}`);
   }
 
   useEffect(()=>{
     setTargetUser(null);
   }, [])
-
-  // useEffect(()=> {
-  //   if(targetUser)
-      
-  // }, [targetUser])
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -41,6 +41,7 @@ const Search = () => {
           placeholder="Search users..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          autoFocus
           className="w-full p-3 px-5 rounded-xl bg-slate-700 text-white outline-none mb-4"
         />
 
@@ -58,7 +59,7 @@ const Search = () => {
               >
                 <img
                   src={
-                    user.profilePic ? user.profilePic : "/assets/user.png" // fallback default image
+                    user.profilePic ? user.profilePic : userImg // fallback default image
                   }
                   alt="profilePic"
                   className="w-10 h-10 rounded-full object-cover"

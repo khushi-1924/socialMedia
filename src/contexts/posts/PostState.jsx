@@ -1,15 +1,19 @@
 import React, { useEffect, useState, useContext } from "react";
 import PostContext from "./PostContext";
-import UserContext from "../users/UserContext"
+import UserContext from "../users/UserContext";
 
 const PostState = (props) => {
-  const { user } = useContext(UserContext);
+  const { user, targetUser } = useContext(UserContext);
   const host = "http://localhost:3000";
 
   const postsInitial = [];
   const myPostsInitial = [];
+  const targetUserPostsInitial = [];
   const [posts, setPosts] = useState(postsInitial);
   const [myPosts, setMyPosts] = useState(myPostsInitial);
+  const [targetUserPosts, setTargetUserPosts] = useState(
+    targetUserPostsInitial
+  );
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -25,13 +29,13 @@ const PostState = (props) => {
           "auth-token": localStorage.getItem("authToken"),
         },
       });
-  
+
       if (!response.ok) {
         throw new Error("Failed to fetch posts");
       }
-  
+
       const json = await response.json();
-  
+
       // No need to convert to base64, use directly
       // console.log(json); // Check if posts are coming properly
       setPosts(json); // Set posts directly
@@ -54,16 +58,36 @@ const PostState = (props) => {
           "auth-token": localStorage.getItem("authToken"),
         },
       });
-  
+
       if (!response.ok) {
         throw new Error("Failed to fetch posts");
       }
-  
+
       const json = await response.json();
-  
+
       setMyPosts(json); // Set posts directly
     } catch (error) {
       console.error("Error fetching posts:", error.message);
+    }
+  };
+
+  // Function to get target user's posts
+  const getTargetUserPosts = async (userId) => {
+    if (!targetUser?._id) return;
+
+    try {
+      const res = await fetch(`${host}/api/posts/getUserPosts/${userId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": localStorage.getItem("authToken"),
+        },
+      });
+      console.log(localStorage.getItem("authToken"))
+      const data = await res.json();
+      setTargetUserPosts(data); // Only posts of that user
+    } catch (err) {
+      console.error("Error fetching profile posts:", err);
     }
   };
 
@@ -123,7 +147,7 @@ const PostState = (props) => {
 
   useEffect(() => {
     const token = localStorage.getItem("authToken");
-  
+
     if (token) {
       getPosts();
     } else {
@@ -138,9 +162,17 @@ const PostState = (props) => {
         setPosts,
         addPost,
         deletePost,
-        getPosts, myPosts, setMyPosts, getMyPosts,
+        getPosts,
+        myPosts,
+        setMyPosts,
+        getMyPosts,
         message,
-        setMessage, loading, setLoading,
+        setMessage,
+        loading,
+        setLoading,
+        getTargetUserPosts,
+        targetUserPosts,
+        setTargetUserPosts,
       }}
     >
       {props.children}

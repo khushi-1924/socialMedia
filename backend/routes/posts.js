@@ -80,6 +80,7 @@ router.get("/getMyPosts", fetchUser, async (req, res) => {
   }
   
 });
+
 // Route 3: get all posts using: GET '/api/posts/getPosts'
 router.get("/getPosts", fetchUser, async (req, res) => {
   try {
@@ -109,8 +110,28 @@ router.get("/getPosts", fetchUser, async (req, res) => {
     console.log(req.user);
     res.status(500).json({ error: "Failed to retrieve posts" });
   }
-  
 });
+
+// Route 5: get posts of specific user using: GET '/api/posts/getUserPosts'
+router.get("/getUserPosts/:id", fetchUser, async (req, res) => {
+  try {
+    const posts = await Posts.find({ user: req.params.id }).populate("user", "password").sort({ date: -1 });
+    // Convert image buffer to base64 for each post
+    const postsWithBase64 = posts.map((post) => {
+    
+      return {
+        ...post._doc,
+        img: `data:image/jpeg;base64,${post.img.toString("base64")}`,
+        user: {
+          ...post.user._doc,
+        },
+      };
+    });
+    res.json(postsWithBase64);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch user posts' });
+  }
+})
 
 // Route 4: delete post with id using: DELETE '/api/posts/deletePost'
 router.delete('/deletePost/:id', fetchUser, async(req,res)=>{

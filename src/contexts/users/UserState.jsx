@@ -6,7 +6,7 @@ const UserState = (props) => {
   const host = "http://localhost:3000";
   const [user, setUser] = useState(null);
   const [targetUser, setTargetUser] = useState(null);
-  const [isFollowing, setIsFollowing] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(null);
   const [loading, setLoading] = useState(true);
   const [results, setResults] = useState([]);
 
@@ -70,13 +70,22 @@ const UserState = (props) => {
     return userImg; // Default image from assets
   };
 
+  // Get target user Profile Pic URL
+  const getTargetUserProfilePicUrl = () => {
+    if (targetUser?.profilePic) {
+      return targetUser.profilePic; // Use base64 string coming from the backend
+    }
+    // Return default profile picture if no profile picture is set
+    return userImg; // Default image from assets
+  };
+
   // Handling the follow and unfollow logic
-  const handleFollowToggle = async () => {
+  const handleFollowToggle = async (userId) => {
     try {
       const endpoint = isFollowing
-        ? `${host}/api/auth/unfollow/${targetUser._id}`
-        : `${host}/api/auth/follow/${targetUser._id}`;
-  
+        ? `${host}/api/auth/unfollow/${userId}`
+        : `${host}/api/auth/follow/${userId}`;
+
       const response = await fetch(endpoint, {
         method: "PUT",
         headers: {
@@ -84,18 +93,22 @@ const UserState = (props) => {
           "auth-token": localStorage.getItem("authToken"),
         },
       });
-  
+
+      const data = await response.json();
+      setIsFollowing(!isFollowing);
       if (response.ok) {
-        const updatedUser = await response.json();
-        setIsFollowing(!isFollowing);
+        console.log("response: ", data);
       } else {
-        console.error("Failed to toggle follow");
+        console.error(
+          "Failed to toggle follow:",
+          data?.msg || data?.error || data
+        );
       }
     } catch (error) {
       console.error("Error:", error);
     }
   };
-  
+
   // Save card preferences
   const savePreferences = async (font, backgroundColor, text) => {
     const response = await fetch(`${host}/api/auth/updatePreferences`, {
@@ -148,12 +161,18 @@ const UserState = (props) => {
   }, [user]);
 
   useEffect(() => {
+    // console.log(user)
+    // console.log(targetUser)
+    // console.log(user?.following)
     if (user && targetUser) {
-      const following = user.following.includes(targetUser._id);
-      setIsFollowing(following);
+      // Convert user.following and targetUser._id to strings for comparison
+      const targetUserId = targetUser._id; // Assuming targetUser._id is a string in frontend (not ObjectId)
+
+      // Check if user.following contains targetUser._id (whether it's in string or ObjectId format)
+      const isFollowed = user.following.some((id) => id.toString() === targetUserId.toString());
+    setIsFollowing(isFollowed);
     }
   }, [user, targetUser]);
-
 
   return (
     <UserContext.Provider
@@ -170,7 +189,15 @@ const UserState = (props) => {
         setSelectedColor,
         setSelectedText,
         savePreferences,
-        targetUser, setTargetUser, handleFollowToggle, isFollowing, setIsFollowing, results, setResults, fetchUsers
+        targetUser,
+        setTargetUser,
+        handleFollowToggle,
+        isFollowing,
+        setIsFollowing,
+        results,
+        setResults,
+        fetchUsers,
+        getTargetUserProfilePicUrl,
       }}
     >
       {props.children}
