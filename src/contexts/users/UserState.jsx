@@ -5,6 +5,7 @@ import userImg from "../../assets/user.png"; // Import default image
 const UserState = (props) => {
   const host = "http://localhost:3000";
   const [user, setUser] = useState(null);
+  const [users, setUsers] = useState([]);
   const [targetUser, setTargetUser] = useState(null);
   const [isFollowing, setIsFollowing] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -143,6 +144,17 @@ const UserState = (props) => {
     }
   };
 
+  // Fetch all users
+  const fetchAllUsers = async () => {
+    try {
+      const response = await fetch(`${host}/api/auth/getAllUsers`); 
+      const data = await response.json();
+      setUsers(data);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  }
+
   const [selectedFont, setSelectedFont] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
   const [selectedText, setSelectedText] = useState("");
@@ -153,26 +165,16 @@ const UserState = (props) => {
   }, []);
 
   useEffect(() => {
+    fetchAllUsers();
+  }, [])
+
+  useEffect(() => {
     setSelectedFont(user?.font || localStorage.getItem("selectedFont"));
     setSelectedColor(
       user?.backgroundColor || localStorage.getItem("selectedColor")
     );
     setSelectedText(user?.text || localStorage.getItem("selectedText"));
   }, [user]);
-
-  useEffect(() => {
-    // console.log(user)
-    // console.log(targetUser)
-    // console.log(user?.following)
-    if (user && targetUser) {
-      // Convert user.following and targetUser._id to strings for comparison
-      const targetUserId = targetUser._id; // Assuming targetUser._id is a string in frontend (not ObjectId)
-
-      // Check if user.following contains targetUser._id (whether it's in string or ObjectId format)
-      const isFollowed = user.following.some((id) => id.toString() === targetUserId.toString());
-    setIsFollowing(isFollowed);
-    }
-  }, [user, targetUser]);
 
   return (
     <UserContext.Provider
@@ -198,6 +200,7 @@ const UserState = (props) => {
         setResults,
         fetchUsers,
         getTargetUserProfilePicUrl,
+        users,
       }}
     >
       {props.children}

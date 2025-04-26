@@ -83,7 +83,6 @@ const PostState = (props) => {
           "auth-token": localStorage.getItem("authToken"),
         },
       });
-      console.log(localStorage.getItem("authToken"))
       const data = await res.json();
       setTargetUserPosts(data); // Only posts of that user
     } catch (err) {

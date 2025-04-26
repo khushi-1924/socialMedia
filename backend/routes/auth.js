@@ -307,4 +307,37 @@ router.get("/searchUsers", async (req, res) => {
   }
 });
 
+// Route 9: get all users using: GET '/api/auth/getAllUsers'
+// Route 9: get all users using: GET '/api/auth/getAllUsers'
+router.get('/getAllUsers', async (req, res) => {
+  try {
+    const users = await User.find(); // Fetch all users
+    const formattedUsers = users.map((user) => {
+      let profilePic = null;
+      if (user.profilePic && user.profilePic.data) {
+        profilePic = `data:${user.profilePic.contentType};base64,${user.profilePic.data.toString("base64")}`;
+      } else {
+        profilePic = `http://localhost:3000/static/user.png`;
+      }
+
+      return {
+        _id: user._id,
+        username: user.username,
+        profilePic: profilePic,
+        backgroundColor: user.backgroundColor || "#000000",
+        font: user.font || "sans-serif",
+        text: user.text || "Hello there!",
+        followers: user.followers || [],
+        following: user.following || [],
+      };
+    });
+
+    res.json(formattedUsers); // ✅ send response
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
 module.exports = router;

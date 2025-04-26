@@ -1,4 +1,4 @@
-import React, { useRef, useState, useContext } from "react";
+import React, { useRef, useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import heart from "../assets/heart.png";
@@ -9,13 +9,15 @@ import UserContext from "../contexts/users/UserContext"
 
 const Card = ({ post }) => {
   const navigate = useNavigate();
-  const { setTargetUser } = useContext(UserContext);
+  const { setTargetUser, user, getTargetUserProfilePicUrl, targetUser, handleFollowToggle } = useContext(UserContext);
+  const [isFollowing, setIsFollowing] = useState(false);
   const [like, setLike] = useState(false);
   const [follow, setFollow] = useState(false);
   const likeOnClick = () => {
     console.log("Like Clicked");
     setLike(!like);
   };
+
   const textAreaRef = useRef(null);
   const commentOnClick = () => {
     console.log("Comment Clicked");
@@ -26,10 +28,7 @@ const Card = ({ post }) => {
     setTargetUser(post.user); // sets the clicked user
     navigate(`/profile/${user._id}`);     // navigate to profile page
   };
-  const followOnClick = (e) => {
-    console.log("Follow Clicked");
-    setFollow(!follow);
-  }
+  
   return (
     <div className="bg-slate-900 h-full w-full">
         <div className="flex flex-col items-center justify-center h-full w-full">
@@ -53,9 +52,6 @@ const Card = ({ post }) => {
                     <p className="ml-3 font-bold text-xl font-mono hover:underline hover:underline-offset-2 cursor-pointer" onClick={()=>handleUserClick(post.user)}>{post.user.username}</p>
                   </div>
                   <div>
-                    <button className="rounded-lg py-2 px-4 outline-2 mr-5 hover:cursor-pointer hover:bg-blue-500 hover:outline-blue-600 hover:text-white duration-300" onClick={followOnClick}>
-                      {follow ? "Follow" : "Following"}
-                    </button>
                   </div>
                 </div>
                 <div className="p-2">

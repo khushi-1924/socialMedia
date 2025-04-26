@@ -15,6 +15,7 @@ import UserState from "./contexts/users/UserState";
 import ProfilePicture from "./screens/ProfilePicture";
 import ProfileUser from "./screens/ProfileUser";
 import EditProfile from "./screens/EditProfile";
+import Card from "./components/Card";
 
 function App() {
   let navigate = useNavigate();

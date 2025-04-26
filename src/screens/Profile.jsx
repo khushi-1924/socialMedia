@@ -1,26 +1,35 @@
 import React, { useEffect, useContext, useState } from "react";
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import user from '../assets/user.png'
+import user from "../assets/user.png";
 import PostContext from "../contexts/posts/PostContext";
 import UserContext from "../contexts/users/UserContext";
 import Card from "../components/Card";
 
 const Profile = () => {
-  // const { id } = useParams();
+  const { id } = useParams();
+  const navigate = useNavigate();
   const context = useContext(PostContext);
   const { posts, getPosts, getTargetUserPosts, targetUserPosts } = context;
   const context1 = useContext(UserContext);
-  const { user, getTargetUserProfilePicUrl, targetUser, isFollowing, setIsFollowing, handleFollowToggle } = context1; 
+  const {
+    user,
+    getTargetUserProfilePicUrl,
+    targetUser,
+    isFollowing,
+    setIsFollowing,
+    handleFollowToggle,
+  } = context1;
 
+  const [selectedPost, setSelectedPost] = useState(null);
 
   const postClick = (post) => {
-    <Card post={post} />
-  }
+    setSelectedPost(post);
+  };
 
   useEffect(() => {
     getPosts();
-    console.log(targetUser)
+    console.log(targetUser);
   }, []);
 
   useEffect(() => {
@@ -28,23 +37,28 @@ const Profile = () => {
   }, [targetUser]);
 
   useEffect(() => {
-      console.log("Running useEffect");
-      if (user && targetUser) {
-        setIsFollowing(user.following.includes(targetUser._id));
-        console.log(isFollowing);
-      }
-    }, [user, targetUser]);
+    if (user && targetUser) {
+      const isAlreadyFollowing = user.following.some(
+        (followedUser) =>
+          followedUser._id === targetUser._id || followedUser === targetUser._id
+      );
+      setIsFollowing(isAlreadyFollowing);
+    }
+  }, [user, targetUser]);
 
   return (
     <>
       <Navbar />
       <div className="bg-slate-900 min-h-screen w-full overflow-x-hidden">
-        <div className="w-full h-40 flex items-center justify-center relative" style={{
-          backgroundColor: targetUser?.backgroundColor || "#ffffff", // fallback if not set
-          fontFamily: targetUser?.font || "sans-serif", // fallback font
-        }}> 
+        <div
+          className="w-full h-40 flex items-center justify-center relative"
+          style={{
+            backgroundColor: targetUser?.backgroundColor || "#ffffff", // fallback if not set
+            fontFamily: targetUser?.font || "sans-serif", // fallback font
+          }}
+        >
           <p className="font-bold text-2xl">
-          {targetUser?.text || `"Whoever is happy will make others happy."`}
+            {targetUser?.text || `"Whoever is happy will make others happy."`}
           </p>
           <div className="absolute top-24 z-1">
             <img
@@ -53,7 +67,7 @@ const Profile = () => {
               alt=""
             />
             <p className="mt-2 font-semibold text-2xl text-center font-mono text-white">
-            {targetUser?.username}
+              {targetUser?.username}
             </p>
           </div>
         </div>
@@ -73,16 +87,22 @@ const Profile = () => {
         </div>
         <div className="w-full flex justify-center">
           <div className="w-3/4 h-14 flex items-center justify-between">
-          {isFollowing ? (
-            <button className="p-2 mx-4 w-3/4 bg-red-400 transition delay-100 hover:cursor-pointer hover:bg-red-500 font-semibold text-lg rounded text-slate-900" onClick={()=>handleFollowToggle(targetUser._id)}>
-            Unfollow
-       </button>
-          ) : (
-            <button className="p-2 mx-4 w-3/4 bg-blue-400 transition delay-100 hover:cursor-pointer hover:bg-blue-500 font-semibold text-lg rounded text-slate-900" onClick={()=>handleFollowToggle(targetUser._id)}>
-                 Follow
-            </button>
-          )}
-            
+            {isFollowing ? (
+              <button
+                className="p-2 mx-4 w-3/4 bg-red-400 transition delay-100 hover:cursor-pointer hover:bg-red-500 font-semibold text-lg rounded text-slate-900"
+                onClick={() => handleFollowToggle(targetUser._id)}
+              >
+                Unfollow
+              </button>
+            ) : (
+              <button
+                className="p-2 mx-4 w-3/4 bg-blue-400 transition delay-100 hover:cursor-pointer hover:bg-blue-500 font-semibold text-lg rounded text-slate-900"
+                onClick={() => handleFollowToggle(targetUser._id)}
+              >
+                Follow
+              </button>
+            )}
+
             <button className="p-2 mx-4 w-3/4 outline-1 outline-white text-white trasition delay-100 hover:bg-sky-200 hover:text-slate-900 hover:cursor-pointer font-semibold text-lg rounded">
               Message
             </button>
@@ -100,7 +120,7 @@ const Profile = () => {
                   src={post.img} // Render image as base64
                   alt={post.caption || "Post Image"}
                   className="w-full h-64 aspect-square object-contain object-center outline-1 outline-sky-200"
-                  onClick={()=>postClick(post)}
+                  onClick={() => postClick(post)}
                 />
               ))
             ) : (
@@ -109,6 +129,19 @@ const Profile = () => {
               </p>
             )}
           </div>
+          {selectedPost && (
+            <div className="fixed inset-0 bg-opacity-60 z-50 flex items-center justify-center">
+              <div className="relative w-full h-full">
+                <Card post={selectedPost} />
+                <button
+                  onClick={() => setSelectedPost(null)}
+                  className="absolute top-2 right-2 bg-white text-black px-3 py-1 rounded hover:bg-red-500 hover:text-white"
+                >
+                  ✖ Close
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </>
