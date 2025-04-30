@@ -308,7 +308,6 @@ router.get("/searchUsers", async (req, res) => {
 });
 
 // Route 9: get all users using: GET '/api/auth/getAllUsers'
-// Route 9: get all users using: GET '/api/auth/getAllUsers'
 router.get('/getAllUsers', async (req, res) => {
   try {
     const users = await User.find(); // Fetch all users
@@ -322,6 +321,7 @@ router.get('/getAllUsers', async (req, res) => {
 
       return {
         _id: user._id,
+        name: user.name,
         username: user.username,
         profilePic: profilePic,
         backgroundColor: user.backgroundColor || "#000000",

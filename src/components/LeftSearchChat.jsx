@@ -2,9 +2,8 @@ import React, { useState, useEffect, useContext } from "react";
 import UserContext from "../contexts/users/UserContext";
 import { useNavigate } from "react-router-dom";
 import userImg from '../assets/user.png'
-import Navbar from '../components/Navbar'
 
-const Search = () => {
+const LeftSearchChat = () => {
   const navigate = useNavigate();
   const context = useContext(UserContext);
   const { user, results, setResults, fetchUsers, loading, targetUser, setTargetUser } = context;
@@ -35,10 +34,8 @@ const Search = () => {
   }, [query]);
 
   return (
-    <>
-    <Navbar />
-    <div className="w-full h-full bg-slate-900 flex justify-center items-center">
-      <div className="w-1/2 min-h-screen text-white p-4">
+    <div className="w-full bg-slate-900 flex justify-center items-center">
+      <div className="w-19/20 text-white p-4">
         <input
           type="text"
           placeholder="Search users..."
@@ -76,8 +73,7 @@ const Search = () => {
         ) : null}
       </div>
     </div>
-    </>
   );
 };
 
-export default Search;
+export default LeftSearchChat;

@@ -13,6 +13,7 @@ app.use('/static', express.static(path.join(__dirname, 'public')));
 
 app.use ('/api/auth', require('./routes/auth'));
 app.use ('/api/posts', require('./routes/posts'));
+app.use ('/api/message', require('./routes/message'));
 
 app.listen (port, () => {
     console.log(`server listening on port ${port}`);

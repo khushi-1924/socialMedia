@@ -115,15 +115,20 @@ router.get("/getPosts", fetchUser, async (req, res) => {
 // Route 5: get posts of specific user using: GET '/api/posts/getUserPosts'
 router.get("/getUserPosts/:id", fetchUser, async (req, res) => {
   try {
-    const posts = await Posts.find({ user: req.params.id }).populate("user", "password").sort({ date: -1 });
+    const posts = await Posts.find({ user: req.params.id }).populate("user", "-password").sort({ date: -1 });
     // Convert image buffer to base64 for each post
+    
     const postsWithBase64 = posts.map((post) => {
+      const profilePic = post.user?.profilePic?.data
+        ? `data:${post.user.profilePic.contentType};base64,${post.user.profilePic.data.toString('base64')}`
+        : `http://localhost:3000/static/user.png`;
     
       return {
         ...post._doc,
         img: `data:image/jpeg;base64,${post.img.toString("base64")}`,
         user: {
           ...post.user._doc,
+          profilePic: profilePic,
         },
       };
     });
@@ -153,5 +158,49 @@ router.delete('/deletePost/:id', fetchUser, async(req,res)=>{
       res.status(500).send("Internal server error");
   }
 })
+
+// Route 5: toggle likes in posts using: POST '/api/posts/like/:id'
+router.put('/like/:postId', fetchUser, async (req, res) => {
+  try {
+    const post = await Posts.findById(req.params.postId);
+    const userId = req.user.id;
+
+    if (!post) return res.status(404).json({ msg: "Post not found" });
+
+    if (post.likes.includes(userId)) {
+      // If already liked, unlike it
+      post.likes = post.likes.filter(id => id.toString() !== userId);
+    } else {
+      // Else, like it
+      post.likes.push(userId);
+    }
+    await post.save();
+    res.json(post);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// Route 5: add comment in posts using: POST '/api/posts/comment/:id'
+router.post('/comment/:postId', fetchUser, async (req, res) => {
+  try {
+    const post = await Posts.findById(req.params.postId);
+    const { text } = req.body;
+    const userId = req.user.id;
+
+    if (!post) return res.status(404).json({ msg: "Post not found" });
+
+    const newComment = { user: userId, text };
+    post.comments.push(newComment);
+    await post.save();
+
+    res.json(post);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 
 module.exports = router;
