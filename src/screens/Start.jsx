@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 const Start = () => {
   const [message, setMessage] = useState("");
@@ -27,9 +28,9 @@ const Start = () => {
       localStorage.setItem("authToken", json.authToken);
       navigate("/home", { replace: true });
       window.location.reload();
-      alert(json.message);
+      toast.success(json.message);
     } else {
-      alert(json.message);
+      toast.error(json.message);
     }
   };
 

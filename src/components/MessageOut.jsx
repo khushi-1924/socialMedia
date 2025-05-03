@@ -1,18 +1,20 @@
 import React from "react";
 
-const MessageOut = () => {
+const MessageOut = ({ message }) => {
   return (
-    <div>
-      <div className="flex justify-end gap-2.5 p-4">
-        <div className="flex flex-col w-full max-w-[400px] leading-1.5 p-4 rounded-l-xl rounded-br-xl bg-blue-950">
-          <div className="flex items-center space-x-2 rtl:space-x-reverse"></div>
-          <p className="text-sm font-normal py-2.5 text-white">
-            That's awesome. I think our users will really appreciate the
-            improvements.
-          </p>
+    <div className="flex justify-end gap-2.5 p-1">
+      <div className="flex flex-col max-w-[400px] p-3 rounded-l-2xl rounded-br-2xl bg-blue-600 relative">
+        <p className="text-sm font-normal text-white pr-12">
+          {message.message}
+        </p>
 
-          <span className="text-sm text-start font-normal text-gray-500 dark:text-gray-400">
-            11:46
+        <div className="absolute bottom-2 right-2 flex items-center gap-1">
+          <span className="text-[10px] text-gray-400">
+            {new Date(message.createdAt).toLocaleTimeString("en-IN", {
+              timeZone: "Asia/Kolkata",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
           </span>
         </div>
       </div>

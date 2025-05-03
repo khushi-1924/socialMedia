@@ -3,6 +3,7 @@ const router = express.Router();
 const fetchUser = require("../middleware/fetchUser");
 const Conversation = require("../models/Conversation");
 const Messages = require("../models/Messages");
+const { getReceiverSocketId, io } = require("../socketio/server");
 
 // Route 1: to send messages using: POST '/api/message/sendMessage'
 router.post("/sendMessage/:id", fetchUser, async (req, res) => {
@@ -30,6 +31,12 @@ router.post("/sendMessage/:id", fetchUser, async (req, res) => {
       conversation.messages.push(newMessage._id);
     }
     await Promise.all([conversation.save(), newMessage.save()]);
+
+    const receiverSocketId = getReceiverSocketId(receiverId);
+    if(receiverSocketId) {
+      io.to(receiverSocketId).emit("newMessage", newMessage)
+    }
+
     res
       .status(200)
       .json({ message: "message sent successfully", conversation });
@@ -51,7 +58,7 @@ router.get("/getMessages/:id", fetchUser, async(req, res) => {
 
         if (!conversation) {
             console.log("no conversation found")
-            res.status(404).json([]);
+            return res.status(404).json({ messages: [] });
         }
         const messages = conversation.messages;
         res.status(200).json({ messages });

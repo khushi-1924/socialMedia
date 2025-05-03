@@ -7,7 +7,7 @@ const MessageLeft = () => {
   const context = useContext(UserContext);
   const { users } = context;
   return (
-    <div className="w-[30%] h-full text-white">
+    <div className="w-[30%] h-full text-white bg-slate-900">
       <p className="text-4xl text-sky-100 px-5 font-semibold p-2">Chats</p>
       <LeftSearchChat />
       <hr />

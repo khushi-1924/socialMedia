@@ -16,6 +16,9 @@ import ProfilePicture from "./screens/ProfilePicture";
 import ProfileUser from "./screens/ProfileUser";
 import EditProfile from "./screens/EditProfile";
 import Card from "./components/Card";
+import MessageState from "./contexts/messages/MessageState";
+import { SocketProvider } from "./contexts/socket/SocketContext";
+import toast, { Toaster } from 'react-hot-toast';
 
 function App() {
   let navigate = useNavigate();
@@ -29,33 +32,42 @@ function App() {
     <>
       <UserState>
         <PostState>
-          <div className="h-screen w-screen">
-            <Routes>
-              <Route exact path="/" element={<Start />} />
-              <Route
-                exact
-                path="/forgot-password"
-                element={<ForgetPassword />}
-              />
-              <Route exact path="/signup" element={<Signup />} />
-              <Route
-                exact
-                path="/home"
-                element={
-                  localStorage.getItem("authToken") ? <Home /> : <Start />
-                }
-              />
-              <Route exact path="/profile/:id" element={<Profile />} />
-              <Route exact path="/message" element={<Message />} />
-              <Route exact path="/search" element={<Search />} />
-              <Route exact path="/addPost" element={<AddPost />} />
-              <Route exact path="/profilePic" element={<ProfilePicture />} />
-              <Route exact path="/profileUser" element={<ProfileUser />} />
-              <Route exact path="/editProfile" element={<EditProfile />} />
-            </Routes>
-          </div>
+          <MessageState>
+            <SocketProvider>
+              <div className="h-screen w-screen">
+                <Routes>
+                  <Route exact path="/" element={<Start />} />
+                  <Route
+                    exact
+                    path="/forgot-password"
+                    element={<ForgetPassword />}
+                  />
+                  <Route exact path="/signup" element={<Signup />} />
+                  <Route
+                    exact
+                    path="/home"
+                    element={
+                      localStorage.getItem("authToken") ? <Home /> : <Start />
+                    }
+                  />
+                  <Route exact path="/profile/:id" element={<Profile />} />
+                  <Route exact path="/message" element={<Message />} />
+                  <Route exact path="/search" element={<Search />} />
+                  <Route exact path="/addPost" element={<AddPost />} />
+                  <Route
+                    exact
+                    path="/profilePic"
+                    element={<ProfilePicture />}
+                  />
+                  <Route exact path="/profileUser" element={<ProfileUser />} />
+                  <Route exact path="/editProfile" element={<EditProfile />} />
+                </Routes>
+              </div>
+            </SocketProvider>
+          </MessageState>
         </PostState>
       </UserState>
+      <Toaster />
     </>
   );
 }

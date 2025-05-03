@@ -1,9 +1,10 @@
 const express = require('express');
 const connectToMongo = require('./db');
-const app = express();
-var cors = require('cors');
+// const app = express();
+const cors = require('cors');
 const path = require('path');
 const port = 3000;
+const { server, app } = require('./socketio/server');
 
 connectToMongo();
 app.use(express.urlencoded ({ extended: false }));
@@ -15,6 +16,6 @@ app.use ('/api/auth', require('./routes/auth'));
 app.use ('/api/posts', require('./routes/posts'));
 app.use ('/api/message', require('./routes/message'));
 
-app.listen (port, () => {
+server.listen (port, () => {
     console.log(`server listening on port ${port}`);
 })

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import user from '../assets/user.png';
+import toast from "react-hot-toast";
 
 const Signup = () => {
   const [creds, setCreds] = useState({
@@ -29,9 +30,9 @@ const Signup = () => {
     // console.log(json);
     if (json.success) {
       navigate("/");
-      alert(json.message);
+      toast.success(json.message);
     } else {
-      alert(json.message);
+      toast.error(json.message);
     }
   };
 

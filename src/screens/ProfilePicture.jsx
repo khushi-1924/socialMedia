@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import userContext from "../contexts/users/UserContext";
+import toast from "react-hot-toast";
 
 const ProfilePicture = () => {
   const context = useContext(userContext);
@@ -25,7 +26,7 @@ const ProfilePicture = () => {
   // Submit form data
   const handleSubmit = async (e) => {
     e.preventDefault();
-    alert('profile picture updated successfully!')
+    toast.success('profile picture updated successfully!')
 
     if (!profilePic) {
       setMessage("Please select an image to upload.");
