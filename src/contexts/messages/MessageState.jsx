@@ -25,14 +25,13 @@ const MessageState = (props) => {
         setMessages(data.messages);
         setLoading(false);
       } catch (error) {
-        console.log("error in function");
+        console.log("error in getmessage function", error);
       }
     }
   };
 
   // to send messages in a conversation between two users
   const sendMessages = async (message) => {
-    setLoading(true);
     if (selectedConversation && selectedConversation._id) {
       try {
         const response = await fetch(
@@ -47,8 +46,7 @@ const MessageState = (props) => {
           }
         );
         const data = await response.json();
-        setMessages([...messages, data.message]);
-        setLoading(false);
+        setMessages([...messages, data.messageData]);
       } catch (error) {
         console.log("error in sendmessage function", error);
       }

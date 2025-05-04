@@ -39,7 +39,7 @@ router.post("/sendMessage/:id", fetchUser, async (req, res) => {
 
     res
       .status(200)
-      .json({ message: "message sent successfully", conversation });
+      .json({ message: "message sent successfully", messageData: newMessage });
   } catch (error) {
     console.log("error in sending message ", error);
     res.status(500).json({ message: "internal server error" });

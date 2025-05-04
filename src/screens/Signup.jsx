@@ -122,7 +122,7 @@ const Signup = () => {
 
             <button
               type="submit"
-              className="bg-sky-800 hover:bg-[#3c4974f2] text-white text-lg p-2 rounded-lg w-4/5 mt-4"
+              className="bg-sky-800 hover:bg-sky-600 text-white text-lg p-2 rounded-lg w-4/5 mt-4"
             >
               Create Account
             </button>

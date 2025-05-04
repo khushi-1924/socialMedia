@@ -22,16 +22,18 @@ const Navbar = () => {
   };
   return (
     <div>
-      <div className="bg-[#d6e6ff] rounded-b-sm h-18 w-full flex items-center justify-between">
+      <div className="bg-slate-800 rounded-b-sm h-18 w-full flex items-center justify-between">
         <div className="flex h-16 items-center mx-5">
-          <Link to='/home'><img src={logoName} className="h-12 w-28" alt="" /></Link>
+          <Link to="/home">
+            <img src={logoName} className="h-12 w-28 invert-30" alt="" />
+          </Link>
         </div>
         <div className="h-16 hidden md:flex items-center justify-center mr-5">
           <div className="relative group w-11 mx-5">
             <Link to="/message">
               <img
                 src={message}
-                className="h-11 w-11 p-1 mx-5 transition duration-300 transform hover:scale-110 hover:outline-2 rounded-xl"
+                className="h-11 w-11 p-1 mx-5 transition duration-300 transform hover:scale-110 hover:outline-2 rounded-xl invert"
                 alt=""
               />
             </Link>
@@ -43,7 +45,7 @@ const Navbar = () => {
             <Link to="/search">
               <img
                 src={search}
-                className="h-11 w-11 p-1 mx-5 transition duration-300 transform hover:scale-110 hover:outline-2 rounded-xl"
+                className="h-11 w-11 p-1 mx-5 transition duration-300 transform hover:scale-110 hover:outline-2 rounded-xl invert"
                 alt=""
               />
             </Link>
@@ -55,7 +57,7 @@ const Navbar = () => {
             <Link to="/addPost">
               <img
                 src={add}
-                className="h-10 w-10 p-1 mx-5 transition duration-300 transform hover:scale-110 hover:outline-2 rounded-xl"
+                className="h-10 w-10 p-1 mx-5 transition duration-300 transform hover:scale-110 hover:outline-2 rounded-xl invert"
                 alt=""
               />
             </Link>
@@ -67,7 +69,7 @@ const Navbar = () => {
             <Link to="/profileUser">
               <img
                 src={profile}
-                className="h-10 w-10 p-1 mx-5 transition duration-300 transform hover:scale-110 hover:outline-2 rounded-xl"
+                className="h-10 w-10 p-1 mx-5 transition duration-300 transform hover:scale-110 hover:outline-2 rounded-xl invert"
                 alt=""
               />{" "}
             </Link>
@@ -78,7 +80,7 @@ const Navbar = () => {
           <div className="relative group w-11 mx-5 hover:cursor-pointer">
             <img
               src={logout}
-              className="h-10 w-10 p-1 mx-5 transition duration-300 transform hover:scale-110 hover:outline-2 rounded-xl"
+              className="h-10 w-10 p-1 mx-5 transition duration-300 transform hover:scale-110 hover:outline-2 rounded-xl invert"
               alt=""
               onClick={handleLogout}
             />{" "}
@@ -108,6 +110,7 @@ const Navbar = () => {
 
         {menuOpen && (
           <div className="absolute top-16 right-4 bg-white shadow-lg rounded-lg p-4 w-30 flex flex-col items-center md:hidden">
+            <Link to='/search'>
             <div className="flex items-center">
               <img
                 src={search}
@@ -116,7 +119,9 @@ const Navbar = () => {
               />
               <p className="text-xl font-semibold font-sans mx-2">Search</p>
             </div>
+            </Link>
             <hr />
+            <Link to='/addPost'>
             <div className="flex items-center">
               <img
                 src={add}
@@ -125,7 +130,9 @@ const Navbar = () => {
               />
               <p className="text-xl font-semibold font-sans mx-2">Add</p>
             </div>
+            </Link>
             <hr />
+            <Link to='/profileUser'>
             <div className="flex items-center">
               <img
                 src={profile}
@@ -134,18 +141,22 @@ const Navbar = () => {
               />
               <p className="text-xl font-semibold font-sans mx-2">Profile</p>
             </div>
-            <div className="flex items-center">
-              <img
-                src={message}
-                className="h-7 w-7 p-1 my-2 transition duration-300 transform hover:scale-110"
-                alt="Message"
-              />
-              <p className="text-xl font-semibold font-sans mx-2">Messages</p>
-            </div>
+            </Link>
+            <Link to="/message">
+              <div className="flex items-center">
+                <img
+                  src={message}
+                  className="h-7 w-7 p-1 my-2 transition duration-300 transform hover:scale-110"
+                  alt="Message"
+                />
+                <p className="text-xl font-semibold font-sans mx-2">Messages</p>
+              </div>
+            </Link>
             <div className="flex items-center hover:bg-red-400">
               <img
                 src={logout}
                 className="h-7 w-7 p-1 my-2 transition duration-300 transform hover:scale-110"
+                onClick={handleLogout}
                 alt="Logout"
               />
               <p className="text-xl font-semibold font-sans mx-2">Logout</p>

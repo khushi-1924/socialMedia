@@ -4,21 +4,26 @@ import MessageOut from "./MessageOut";
 import MessageContext from "../contexts/messages/MessageContext";
 import hello from "../assets/hello.gif";
 import UserContext from "../contexts/users/UserContext";
-import useGetSocketMessage from '../contexts/socket/useGetSocketMessage';
+import useGetSocketMessage from "../contexts/socket/useGetSocketMessage";
 
 const MessagesChat = () => {
   const { user } = useContext(UserContext);
-  const { messages = [], loading } = useContext(MessageContext);
+  const { messages, loading } = useContext(MessageContext);
   useGetSocketMessage();
+  console.log(user);
 
   const lastMessageRef = useRef();
+
   useEffect(() => {
     setTimeout(() => {
-      if (lastMessageRef) {
-        lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
+      if (lastMessageRef.current) {
+        lastMessageRef.current.scrollIntoView({
+          behavior: "smooth",
+        });
       }
     }, 100);
   }, [messages]);
+
   return (
     <div className="h-full">
       {loading ? (
@@ -27,18 +32,19 @@ const MessagesChat = () => {
         </div>
       ) : (
         messages?.length > 0 &&
-        messages.map((message, index) =>
-          message.senderId === user?._id ? (
-            <div key={message._id || index} ref={lastMessageRef}>
-              <MessageOut message={message} />
+        messages.map((message) => {
+          const isSentByUser = message.senderId === user?._id;
+          return (
+            <div key={message._id} ref={lastMessageRef}>
+              {isSentByUser ? (
+                <MessageOut message={message} />
+              ) : (
+                <MessageIn message={message} />
+              )}
             </div>
-          ) : (
-            <div key={message._id || index} ref={lastMessageRef}>
-              <MessageIn message={message} />
-            </div>
-          )
-        )
-        
+          );
+        })
+
         // messages.map((message) =>
         //   message.senderId === user?._id ? (
         //     <div key={message._id} ref={lastMessageRef}>
