@@ -19,8 +19,7 @@ const Card = ({ post }) => {
   } = useContext(UserContext);
   const currentUser = user; // Assuming you have the current user data in context or props
   const host = "http://localhost:3000";
-  // const [like, setLike] = useState(false);
-  const [follow, setFollow] = useState(false);
+  // const [follow, setFollow] = useState(false);
 
   const [like, setLike] = useState(false);
   const [likesCount, setLikesCount] = useState(post.likes?.length || 0);
@@ -37,12 +36,22 @@ const Card = ({ post }) => {
       });
 
       const updatedPost = await response.json();
+      console.log(updatedPost);
       setLike(updatedPost.likes.includes(user._id));
       setLikesCount(updatedPost.likes.length);
     } catch (error) {
       console.error("Failed to like the post", error);
     }
   };
+
+  useEffect(() => {
+    if (user && post.likes && Array.isArray(post.likes)) {
+      const liked = post.likes.some((id) =>
+        typeof id === "string" ? id === user._id : id._id === user._id
+      );
+      setLike(liked);
+    }
+  }, [post.likes, user]);
 
   // Add Comment
   const handleCommentSubmit = async (e) => {
@@ -116,10 +125,11 @@ const Card = ({ post }) => {
               <div className="ml-2 p-1 flex items-center">
                 <img
                   className="h-8 w-8 mr-4 transition-all duration-300 delay-100 ease-in-out transform scale-100 hover:scale-110 opacity-100 hover:cursor-pointer"
-                  src={like ? heart : heartLiked}
+                  src={like ? heartLiked : heart}
                   onClick={handleLike}
                   alt="like icons"
-                /> {likesCount}
+                />{" "}
+                {likesCount}
                 <img
                   src={comment}
                   onClick={commentOnClick}
