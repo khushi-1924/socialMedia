@@ -219,13 +219,24 @@ router.post("/comment/:postId", fetchUser, async (req, res) => {
     const { text } = req.body;
     const userId = req.user.id;
 
-    if (!post) return res.status(404).json({ msg: "Post not found" });
+    if (!text || !text.trim()) {
+      return res.status(400).json({ msg: "Comment text cannot be empty" });
+    }
+    if (!post) {
+      return res.status(404).json({ msg: "Post not found" });
+    }
 
-    const newComment = { user: userId, text };
+    const newComment = {
+      user: userId,
+      text: text.trim(),
+      createdAt: new Date(),
+    };
     post.comments.push(newComment);
+    
     await post.save();
+    await post.populate("comments.user", "username");
+    res.status(201).json(post);
 
-    res.json(post);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Server error" });

@@ -1,9 +1,10 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import user from "../assets/user.png";
 import postContext from "../contexts/posts/PostContext";
 import userContext from "../contexts/users/UserContext";
+import UserPostCard from "../components/UserPostCard";
 
 const ProfileUser = () => {
   const context = useContext(postContext);
@@ -16,6 +17,37 @@ const ProfileUser = () => {
   const selectedText =
     localStorage.getItem("selectedText") ||
     "Whoever is happy will make others happy!";
+
+  const [selectedPost, setSelectedPost] = useState(null);
+  const host = "http://localhost:3000";
+
+  const postClick = (post) => {
+    setSelectedPost(post);
+  };
+
+  const deletePost = async (postId) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this post?"
+    );
+    if (!confirmDelete) return;
+
+    try {
+      const response = await fetch(`${host}/api/posts/deletePost/${postId}`, {
+        method: "DELETE",
+        headers: {
+          "auth-token": localStorage.getItem("authToken"),
+        },
+      });
+
+      const result = await response.json();
+      console.log(result);
+
+      // Optionally, refresh posts or remove this post from UI
+      window.location.reload(); // or call props.onDelete(post._id)
+    } catch (error) {
+      console.error("Failed to delete post", error);
+    }
+  };
 
   useEffect(() => {
     getMyPosts();
@@ -79,6 +111,7 @@ const ProfileUser = () => {
                   src={myPost.img} // Render image as base64
                   alt={myPost.caption || "Post Image"}
                   className="w-full h-64 aspect-square object-contain object-center outline-1 outline-sky-200"
+                  onClick={() => postClick(myPost)}
                 />
               ))
             ) : (
@@ -89,6 +122,25 @@ const ProfileUser = () => {
               </div>
             )}
           </div>
+          {selectedPost && (
+            <div className="fixed inset-0 bg-opacity-60 z-50 flex items-center justify-center">
+              <div className="relative w-full h-full">
+                <UserPostCard post={selectedPost} />
+                <button
+                  onClick={() => setSelectedPost(null)}
+                  className="absolute top-2 right-2  text-black px-3 py-1 rounded hover:bg-red-500"
+                >
+                  ✖
+                </button>
+                <button
+                  onClick={() => deletePost(selectedPost._id)}
+                  className="absolute top-2 right-15 bg-white text-black px-3 py-1 rounded hover:bg-red-500"
+                >
+                  delete post
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </>

@@ -24,6 +24,7 @@ const Card = ({ post }) => {
   const [like, setLike] = useState(false);
   const [likesCount, setLikesCount] = useState(post.likes?.length || 0);
   const [commentText, setCommentText] = useState("");
+  const [comments, setComments] = useState(post.comments || []);
 
   const handleLike = async () => {
     try {
@@ -43,6 +44,29 @@ const Card = ({ post }) => {
       console.error("Failed to like the post", error);
     }
   };
+
+  // const handleCommentSubmit = async (e) => {
+  //   e.preventDefault();
+  //   const trimmedComment = commentText.trim();
+  //   if (!trimmedComment) return;
+
+  //   try {
+  //     const response = await fetch(`${host}/api/posts/comment/${post._id}`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         "auth-token": localStorage.getItem("authToken"),
+  //       },
+  //       body: JSON.stringify({ text: trimmedComment }),
+  //     });
+
+  //     const updatedPost = await response.json();
+  //     setCommentText(""); // Clear input
+  //     setComments(updatedPost.comments); // Update comment list
+  //   } catch (error) {
+  //     console.error("Failed to comment", error);
+  //   }
+  // };
 
   useEffect(() => {
     if (user && post.likes && Array.isArray(post.likes)) {
@@ -67,6 +91,7 @@ const Card = ({ post }) => {
       });
 
       const updatedPost = await response.json();
+      setComments(updatedPost.comments);
       setCommentText(""); // Clear textarea
       console.log(updatedPost); // You can refresh comments if you want
     } catch (error) {
@@ -144,6 +169,7 @@ const Card = ({ post }) => {
                   <textarea
                     ref={textAreaRef}
                     type="text"
+                    value={commentText}
                     className="w-full p-2 px-4 rounded-3xl outline-0 resize-none overflow-hidden h-10 max-h-32"
                     placeholder="type here..."
                     rows="1"
@@ -153,16 +179,35 @@ const Card = ({ post }) => {
                       e.target.style.height = e.target.scrollHeight + "px"; // Set to content height
                     }}
                   />
-                  <img
-                    type="submit"
-                    src={send}
-                    className="w-7 h-7 mr-3 hover:cursor-pointer transition-all duration-300 delay-100 ease-in-out transform scale-100 hover:scale-110 opacity-100"
-                    alt=""
-                  />
+                  <button type="submit">
+                    <img
+                      src={send}
+                      className="w-7 h-7 mr-3 hover:cursor-pointer transition-all duration-300 delay-100 ease-in-out transform scale-100 hover:scale-110 opacity-100"
+                      alt=""
+                    />
+                  </button>
                 </div>
               </form>
             </div>
-            <div></div>
+            <div className="px-4 pt-2 overflow-y-scroll">
+              {comments.length === 0 ? (
+                <p className="text-gray-400 text-sm italic">No comments yet.</p>
+              ) : (
+                comments.map((comment, idx) => (
+                  <div key={idx} className="mb-2">
+                    <p className="text-sm text-slate-800">
+                      <span className="font-semibold text-slate-900">
+                        {comment.user?.username || "User"}
+                      </span>
+                      : {comment.text}
+                    </p>
+                    <p className="text-xs text-gray-400 ml-1">
+                      {new Date(comment.createdAt).toLocaleString()}
+                    </p>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </div>
       </div>
