@@ -4,7 +4,7 @@ import Navbar from "../components/Navbar";
 import user from "../assets/user.png";
 import postContext from "../contexts/posts/PostContext";
 import userContext from "../contexts/users/UserContext";
-import UserPostCard from "../components/UserPostCard";
+import Card from "../components/Card";
 
 const ProfileUser = () => {
   const context = useContext(postContext);
@@ -125,7 +125,7 @@ const ProfileUser = () => {
           {selectedPost && (
             <div className="fixed inset-0 bg-opacity-60 z-50 flex items-center justify-center">
               <div className="relative w-full h-full">
-                <UserPostCard post={selectedPost} />
+                <Card post={selectedPost} />
                 <button
                   onClick={() => setSelectedPost(null)}
                   className="absolute top-2 right-2  text-black px-3 py-1 rounded hover:bg-red-500"

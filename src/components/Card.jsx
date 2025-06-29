@@ -1,9 +1,9 @@
 import React, { useRef, useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
-import axios from "axios";
 import heart from "../assets/heart.png";
 import heartLiked from "../assets/heartLiked.png";
+import edit from "../assets/edit.png";
+import trash from "../assets/trash.png";
 import comment from "../assets/comment.png";
 import send from "../assets/send.png";
 import UserContext from "../contexts/users/UserContext";
@@ -44,29 +44,6 @@ const Card = ({ post }) => {
       console.error("Failed to like the post", error);
     }
   };
-
-  // const handleCommentSubmit = async (e) => {
-  //   e.preventDefault();
-  //   const trimmedComment = commentText.trim();
-  //   if (!trimmedComment) return;
-
-  //   try {
-  //     const response = await fetch(`${host}/api/posts/comment/${post._id}`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         "auth-token": localStorage.getItem("authToken"),
-  //       },
-  //       body: JSON.stringify({ text: trimmedComment }),
-  //     });
-
-  //     const updatedPost = await response.json();
-  //     setCommentText(""); // Clear input
-  //     setComments(updatedPost.comments); // Update comment list
-  //   } catch (error) {
-  //     console.error("Failed to comment", error);
-  //   }
-  // };
 
   useEffect(() => {
     if (user && post.likes && Array.isArray(post.likes)) {
@@ -109,10 +86,51 @@ const Card = ({ post }) => {
     navigate(`/profile/${user._id}`); // navigate to profile page
   };
 
+  const handleCommentDelete = async (commentId) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this comment?"
+    );
+    if (!confirmed) return; // user canceled → don't delete
+
+    try {
+      const res = await fetch(
+        `${host}/api/posts/deleteComment/${post._id}/${commentId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "auth-token": localStorage.getItem("authToken"),
+          },
+        }
+      );
+      const updatedPost = await res.json();
+      setComments(updatedPost.comments); // re-render with updated comments
+    } catch (error) {
+      console.error("Failed to delete comment", error);
+    }
+  };
+
+  const handleCommentEdit = async (commentId, newText) => {
+    const res = await fetch(
+      `${host}/api/posts/editComment/${post._id}/${commentId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": localStorage.getItem("authToken"),
+        },
+        body: JSON.stringify({ text: newText }),
+      }
+    );
+
+    const updatedPost = await res.json();
+    setComments(updatedPost.comments); // re-render with updated comments
+  };
+
   return (
     <div className="bg-slate-900 h-full w-full">
       <div className="flex flex-col items-center justify-center h-full w-full">
-        <div className="bg-amber-50 w-full md:w-1/2 h-[400px] rounded-xl flex flex-col md:flex-row overflow-visible shadow-lg md:shrink-0 divide-x divide-yellow-200">
+        <div className="bg-blue-100 w-full md:w-1/2 h-[400px] rounded-xl flex flex-col md:flex-row overflow-visible shadow-lg md:shrink-0 divide-x divide-blue-200">
           <div className="h-1/2 md:h-full w-full md:w-1/2">
             <img
               src={post.img}
@@ -170,7 +188,7 @@ const Card = ({ post }) => {
                     ref={textAreaRef}
                     type="text"
                     value={commentText}
-                    className="w-full p-2 px-4 rounded-3xl outline-0 resize-none overflow-hidden h-10 max-h-32"
+                    className="w-full p-2 px-4 rounded-3xl outline-0 border-1 border-gray-500 resize-none overflow-hidden h-10 max-h-32"
                     placeholder="type here..."
                     rows="1"
                     onChange={(e) => setCommentText(e.target.value)}
@@ -182,30 +200,69 @@ const Card = ({ post }) => {
                   <button type="submit">
                     <img
                       src={send}
-                      className="w-7 h-7 mr-3 hover:cursor-pointer transition-all duration-300 delay-100 ease-in-out transform scale-100 hover:scale-110 opacity-100"
+                      className="w-7 h-7 ml-2 mr-3 hover:cursor-pointer transition-all duration-300 delay-100 ease-in-out transform scale-100 hover:scale-110 opacity-100"
                       alt=""
                     />
                   </button>
                 </div>
               </form>
             </div>
-            <div className="px-4 pt-2 overflow-y-scroll">
-              {comments.length === 0 ? (
-                <p className="text-gray-400 text-sm italic">No comments yet.</p>
-              ) : (
+            <div className="mt-4 px-6 pb-4 max-h-36 overflow-y-scroll">
+              {comments && comments?.length > 0 ? (
                 comments.map((comment, idx) => (
-                  <div key={idx} className="mb-2">
-                    <p className="text-sm text-slate-800">
-                      <span className="font-semibold text-slate-900">
-                        {comment.user?.username || "User"}
-                      </span>
-                      : {comment.text}
-                    </p>
-                    <p className="text-xs text-gray-400 ml-1">
-                      {new Date(comment.createdAt).toLocaleString()}
-                    </p>
+                  <div
+                    key={idx}
+                    className="mb-2 border border-blue-200 bg-blue-300/50 text-black rounded-2xl py-2 px-4 flex justify-between"
+                  >
+                    <div>
+                      <p className="max-w-42">
+                        <span className="font-semibold">
+                          {comment?.user?.username || "User"}
+                        </span>
+                        : {comment.text}
+                      </p>
+                      <p className="text-xs text-gray-500 ml-1">
+                        {new Date(comment.createdAt)
+                          .toLocaleString()
+                          .substring(0, 9)}
+                        {comment.edited && (
+                          <span className="italic text-yellow-400">
+                            {" "}
+                            (edited)
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                    {comment?.user?._id === user?._id && (
+                      <div>
+                        <button
+                          className="ml-1 w-6 h-6 bg-amber-100 p-1 rounded-l hover:cursor-pointer"
+                          onClick={() => {
+                            const newText = prompt(
+                              "Edit your comment:",
+                              comment.text
+                            );
+                            if (newText !== null) {
+                              handleCommentEdit(comment._id, newText);
+                            }
+                          }}
+                        >
+                          <img className="w-4 h-4" src={edit} alt="" />
+                        </button>
+                        <button
+                          className="mr-1 w-6 h-6 bg-red-200 p-1 rounded-r hover:cursor-pointer"
+                          onClick={() => handleCommentDelete(comment._id)}
+                        >
+                          <img className="w-4 h-4" src={trash} alt="" />
+                        </button>
+                      </div>
+                    )}
                   </div>
                 ))
+              ) : (
+                <p className="text-gray-400 text-sm italic text-center">
+                  No comments yet. Be the first one to comment
+                </p>
               )}
             </div>
           </div>

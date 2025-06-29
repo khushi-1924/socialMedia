@@ -80,8 +80,12 @@ router.get("/getMyPosts", fetchUser, async (req, res) => {
 
     // Convert image buffer to base64 for each post
     const postsWithBase64 = posts.map((post) => {
+      const sortedComments = [...post.comments].sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
       return {
         ...post._doc,
+        comments: sortedComments,
         img: `data:image/jpeg;base64,${post.img.toString("base64")}`,
         user: {
           ...post.user._doc,
@@ -103,10 +107,14 @@ router.get("/getPosts", fetchUser, async (req, res) => {
     const followingIds = user.following;
     const posts = await Posts.find({ user: { $in: followingIds } })
       .populate("user", "-password")
+      .populate("comments.user", "username")
       .sort({ date: -1 });
 
     // Convert image buffer to base64 for each post
     const postsWithBase64 = posts.map((post) => {
+      const sortedComments = [...post.comments].sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
       const profilePic = post.user?.profilePic?.data
         ? `data:${
             post.user.profilePic.contentType
@@ -115,6 +123,7 @@ router.get("/getPosts", fetchUser, async (req, res) => {
 
       return {
         ...post._doc,
+        comments: sortedComments,
         img: `data:image/jpeg;base64,${post.img.toString("base64")}`,
         user: {
           ...post.user._doc,
@@ -135,6 +144,7 @@ router.get("/getUserPosts/:id", fetchUser, async (req, res) => {
   try {
     const posts = await Posts.find({ user: req.params.id })
       .populate("user", "-password")
+      .populate("comments.user", "username")
       .sort({ date: -1 });
     // Convert image buffer to base64 for each post
 
@@ -235,6 +245,7 @@ router.post("/comment/:postId", fetchUser, async (req, res) => {
     
     await post.save();
     await post.populate("comments.user", "username");
+    post.comments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     res.status(201).json(post);
 
   } catch (error) {
@@ -264,5 +275,70 @@ router.delete("/deletePost/:postId", fetchUser, async(req, res) => {
     res.status(500).json({ error: "Failed to delete post" });
   }
 })
+
+// Route 7: edit comment on a post using: PUT '/api/posts/editComment/:postId/:commentId'
+router.put("/editComment/:postId/:commentId", fetchUser, async(req, res) => {
+  try {
+    const post = await Posts.findById(req.params.postId).populate("comments.user", "username");
+    if (!post) {
+      return res.status(404).json({ error: "post not found" });
+    }
+    const comment = post.comments.id(req.params.commentId);
+    if (!comment) {
+      return res.status(404).json({ error: "comment not found" });
+    }
+    if (comment.user._id.toString() !== req.user.id) {
+      return res.status(401).json({ msg: "Not authorized to edit this comment" });
+    }
+    const { text } = req.body;
+    if (!text || !text.trim()) {
+      return res.status(400).json({ msg: "Comment text cannot be empty" });
+    }
+
+    comment.text = text.trim();
+    comment.edited = true; // add edited flag
+
+    await post.save();
+    await post.populate("comments.user", "username");
+    post.comments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    res.status(200).json(post);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "failed to edit comment "});
+  }
+});
+
+// Route 8: delete a comment on a post using: DELETE '/api/posts/deleteComment/:postId/:commentId'
+router.delete("/deleteComment/:postId/:commentId", fetchUser, async (req, res) => {
+  console.log("delete comment")
+  try {
+    const post = await Posts.findById(req.params.postId).populate("comments.user", "username");
+
+    if (!post) {
+      return res.status(404).json({ msg: "Post not found" });
+    }
+    const comment = post.comments.id(req.params.commentId);
+    if (!comment) {
+      return res.status(404).json({ msg: "Comment not found" });
+    }
+
+    // console.log("comment user id ------> ", comment.user.toString());
+    // console.log("logged in user id ------> ", req.user.id);
+
+    // Only the comment's author can delete
+    if (comment.user._id.toString() !== req.user.id) {
+      return res.status(401).json({ msg: "Unauthorized: You can delete only your comments" });
+    }
+
+    comment.deleteOne();
+    await post.save();
+    await post.populate("comments.user", "username");
+    post.comments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    res.status(200).json(post);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
 
 module.exports = router;

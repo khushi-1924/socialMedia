@@ -25,6 +25,7 @@ const PostsSchema = new Schema({
     {
       user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
       text: String,
+      edited: { type: Boolean, default: false },
       createdAt: { type: Date, default: Date.now },
     },
   ],
