@@ -89,21 +89,21 @@ const Profile = () => {
           <div className="w-3/4 h-14 flex items-center justify-between">
             {isFollowing ? (
               <button
-                className="p-2 mx-4 w-3/4 bg-red-400 transition delay-100 hover:cursor-pointer hover:bg-red-500 font-semibold text-lg rounded text-slate-900"
+                className="p-2 mx-4 w-3/4 bg-red-400 transition delay-100 duration-200 hover:cursor-pointer hover:bg-red-500 font-semibold text-lg rounded text-slate-900"
                 onClick={() => handleFollowToggle(targetUser._id)}
               >
                 Unfollow
               </button>
             ) : (
               <button
-                className="p-2 mx-4 w-3/4 bg-blue-400 transition delay-100 hover:cursor-pointer hover:bg-blue-500 font-semibold text-lg rounded text-slate-900"
+                className="p-2 mx-4 w-3/4 bg-blue-400 transition delay-100 duration-200 hover:cursor-pointer hover:bg-blue-500 font-semibold text-lg rounded text-slate-900"
                 onClick={() => handleFollowToggle(targetUser._id)}
               >
                 Follow
               </button>
             )}
 
-            <button className="p-2 mx-4 w-3/4 outline-1 outline-white text-white trasition delay-100 hover:bg-sky-200 hover:text-slate-900 hover:cursor-pointer font-semibold text-lg rounded">
+            <button className="p-2 mx-4 w-3/4 outline-1 outline-white text-white trasition delay-100 duration-200 hover:bg-slate-800 hover:cursor-pointer font-semibold text-lg rounded">
               Message
             </button>
           </div>

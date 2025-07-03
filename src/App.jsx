@@ -20,6 +20,7 @@ import EditProfile from "./screens/EditProfile";
 import MessageState from "./contexts/messages/MessageState";
 import { SocketProvider } from "./contexts/socket/SocketContext";
 import toast, { Toaster } from 'react-hot-toast';
+import ResetPassword from "./screens/ResetPassword";
 
 function App() {
   let navigate = useNavigate();
@@ -62,6 +63,7 @@ function App() {
                   />
                   <Route exact path="/profileUser" element={<ProfileUser />} />
                   <Route exact path="/editProfile" element={<EditProfile />} />
+                  <Route exact path='/reset-password/:id/:token' element={<ResetPassword />} />
                 </Routes>
               </div>
             </SocketProvider>

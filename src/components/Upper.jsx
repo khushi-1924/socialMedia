@@ -9,7 +9,7 @@ const Upper = () => {
   const isOnline = onlineUsers.includes(selectedConversation._id);
 
   return (
-    <div className="w-full bg-slate-800">
+    <div className="w-full bg-slate-900 border-l border-l-gray-700">
       <div className="w-full py-2 px-7 flex rounded items-center">
         <div className="relative">
           <img

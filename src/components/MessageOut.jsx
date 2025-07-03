@@ -3,7 +3,7 @@ import React from "react";
 const MessageOut = ({ message }) => {
   return (
     <div className="flex justify-end gap-2.5 p-1">
-      <div className="flex flex-col max-w-[400px] p-3 rounded-l-2xl rounded-br-2xl bg-blue-600 relative">
+      <div className="flex flex-col mr-16 max-w-[400px] p-3 rounded-l-2xl rounded-br-2xl bg-blue-600 relative">
         <p className="text-sm font-normal text-white pr-12">
           {message.message}
         </p>

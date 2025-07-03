@@ -44,18 +44,6 @@ const MessagesChat = () => {
             </div>
           );
         })
-
-        // messages.map((message) =>
-        //   message.senderId === user?._id ? (
-        //     <div key={message._id} ref={lastMessageRef}>
-        //       <MessageOut message={message} />
-        //     </div>
-        //   ) : (
-        //     <div key={message._id} ref={lastMessageRef}>
-        //       <MessageIn message={message} />
-        //     </div>
-        //   )
-        // )
       )}
       {!loading && messages?.length === 0 && (
         <div className="h-full flex flex-col justify-center items-center ">

@@ -9,6 +9,7 @@ const { upload } = require("../middleware/multerMiddleware");
 const fetchUser = require("../middleware/fetchUser");
 const fs = require("fs");
 const path = require("path");
+const nodemailer = require("nodemailer");
 
 // Route 1: create a user using: POST '/api/auth/createUser'
 router.post(
@@ -308,13 +309,15 @@ router.get("/searchUsers", async (req, res) => {
 });
 
 // Route 9: get all users using: GET '/api/auth/getAllUsers'
-router.get('/getAllUsers', async (req, res) => {
+router.get("/getAllUsers", async (req, res) => {
   try {
     const users = await User.find(); // Fetch all users
     const formattedUsers = users.map((user) => {
       let profilePic = null;
       if (user.profilePic && user.profilePic.data) {
-        profilePic = `data:${user.profilePic.contentType};base64,${user.profilePic.data.toString("base64")}`;
+        profilePic = `data:${
+          user.profilePic.contentType
+        };base64,${user.profilePic.data.toString("base64")}`;
       } else {
         profilePic = `http://localhost:3000/static/user.png`;
       }
@@ -335,9 +338,79 @@ router.get('/getAllUsers', async (req, res) => {
     res.json(formattedUsers); // ✅ send response
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: "Server error" });
   }
 });
 
+// Route 10: to send reset password link to user using: POST '/api/auth/forgot-password'
+router.post("/forgot-password", async (req, res) => {
+  const { email } = req.body;
+  try {
+    User.findOne({ email }).then((user) => {
+      if (!user) {
+        return res.status(404).json({ error: "user not found" });
+      }
+      const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
+
+      let transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: "happiness2804khushi@gmail.com",
+          pass: "ebjxnyzstahvevtb",
+        },
+      });
+
+      let mailOptions = {
+        from: "happiness2804khushi@gmail.com",
+        to: user.email,
+        subject: "Reset Password Link",
+        text: `http://localhost:5173/reset-password/${user._id}/${token}`,
+      };
+
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          return res
+            .status(200)
+            .json({
+              success: true,
+              message: "Password reset link sent to your email",
+            });
+        }
+      });
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "internal server error" });
+  }
+});
+
+// Route 11: to reset password using: POST '/api/auth/reset-password/:id/:token'
+router.post("/reset-password/:id/:token", async (req, res) => {
+  const { id, token } = req.params;
+  const { password } = req.body;
+
+  jwt.verify(token, JWT_SECRET, async (err, decoded) => {
+    if (err) {
+      return res.status(400).json({ error: "invalid or expired token" });
+    }
+    try {
+      const salt = await bcrypt.genSalt(10);
+      const secPass = await bcrypt.hash(password, salt);
+      const user = await User.findByIdAndUpdate(
+        id,
+        { password: secPass },
+        { new: true }
+      );
+      return res
+        .status(200)
+        .json({ success: true, message: "Password reset successfully" });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Error updating password" });
+    }
+  });
+});
 
 module.exports = router;
