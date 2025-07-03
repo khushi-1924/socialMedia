@@ -355,28 +355,35 @@ router.post("/forgot-password", async (req, res) => {
       let transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-          user: "happiness2804khushi@gmail.com",
-          pass: "ebjxnyzstahvevtb",
+          user: "pictaa19social@gmail.com",
+          pass: "jgktcongawmqqqka",
         },
       });
 
       let mailOptions = {
-        from: "happiness2804khushi@gmail.com",
+        from: "pictaa19social@gmail.com",
         to: user.email,
         subject: "Reset Password Link",
-        text: `http://localhost:5173/reset-password/${user._id}/${token}`,
+        text: `Hi ${user.name || "there"},\n
+We received a request to reset your password.
+
+Click the link below to reset your password:
+http://localhost:5173/reset-password/${user._id}/${token}
+
+If you did not request a password reset, please ignore this email.
+
+Thanks,
+Team Picta :)`,
       };
 
       transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
           console.log(error);
         } else {
-          return res
-            .status(200)
-            .json({
-              success: true,
-              message: "Password reset link sent to your email",
-            });
+          return res.status(200).json({
+            success: true,
+            message: "Password reset link sent to your email",
+          });
         }
       });
     });

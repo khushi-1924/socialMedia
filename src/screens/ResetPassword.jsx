@@ -30,11 +30,11 @@ const ResetPassword = () => {
       const data = await res.json();
       if (res.ok) {
         setMessage("Password reset successfully! You can now log in.");
-        toast.success(message);
+        toast.success("Password reset successfully! You can now log in.");
         navigate("/");
       } else {
         setMessage(data.error || "Something went wrong.");
-        toast.error(message);
+        toast.error("Something went wrong. Please try again.");
       }
       setMessage("");
       setPassword("");
@@ -55,14 +55,14 @@ const ResetPassword = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900">
-      <div className="bg-gray-300 p-8 rounded shadow-md w-full max-w-md">
+      <div className="py-6 px-10 bg-blue-300 rounded-2xl shadow-md w-full max-w-md">
         <h2 className="text-xl font-bold mb-4">change password</h2>
         <form onSubmit={handleSubmit}>
           <input
             type="password"
             required
             placeholder="Enter new password"
-            className="w-full p-2 mb-4 border rounded"
+            className="w-full p-2 mb-2 rounded-3xl px-4 border placeholder:text-gray-700 outline-none"
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
@@ -70,10 +70,10 @@ const ResetPassword = () => {
             }}
           />
           <input
-            type="password"
+            type="text"
             required
             placeholder="Confirm new password"
-            className="w-full p-2 mb-2 border rounded"
+            className="w-full p-2 mb-2 rounded-3xl px-4 border placeholder:text-gray-700 outline-none"
             value={confPassword}
             onChange={(e) => {
               setConfPassword(e.target.value);
@@ -85,7 +85,7 @@ const ResetPassword = () => {
           )}
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white p-2 rounded-xl mt-1 hover:bg-blue-600"
+            className="w-full bg-gray-900 text-white p-2 py-3 rounded-xl mt-1 hover:bg-gray-700"
           >
             Update Password
           </button>
