@@ -21,7 +21,7 @@ import MessageState from "./contexts/messages/MessageState";
 import { SocketProvider } from "./contexts/socket/SocketContext";
 import toast, { Toaster } from 'react-hot-toast';
 import ResetPassword from "./screens/ResetPassword";
-import AfterMailSent from "./screens/afterMailSent";
+import AfterMailSent from "./screens/AfterMailSent";
 
 function App() {
   let navigate = useNavigate();
