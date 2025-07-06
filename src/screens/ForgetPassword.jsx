@@ -18,12 +18,10 @@ const ForgetPassword = () => {
       });
       const data = await res.json();
       if (res.ok) {
-        setMessage("Password reset link sent! Check your email.");
-        toast.success(message);
-        navigate("/");
+        navigate("/afterMailSent");
       } else {
         setMessage(data.error || "Something went wrong.");
-        toast.error(message);
+        toast.error("Something went wrong. Please try again.");
       }
       setMessage("");
       setEmail("");
