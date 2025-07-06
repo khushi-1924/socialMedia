@@ -368,7 +368,7 @@ router.post("/forgot-password", async (req, res) => {
 We received a request to reset your password.
 
 Click the link below to reset your password:
-http://localhost:5173/reset-password/${user._id}/${token}
+https://picta-dun.vercel.app/reset-password/${user._id}/${token}
 
 If you did not request a password reset, please ignore this email.
 
