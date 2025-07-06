@@ -5,6 +5,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 
 const Start = () => {
+  const host = "https://picta-backend.onrender.com/";
   const [message, setMessage] = useState("");
   const [creds, setCreds] = useState({
     emailORusername: "",
@@ -16,7 +17,7 @@ const Start = () => {
     e.preventDefault();
     setMessage("");
     const { emailORusername, password } = creds;
-    const response = await fetch("http://localhost:3000/api/auth/loginUser", {
+    const response = await fetch(`${host}/api/auth/loginUser`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

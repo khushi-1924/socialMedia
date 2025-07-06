@@ -6,6 +6,7 @@ import user from '../assets/user.png';
 import toast from "react-hot-toast";
 
 const Signup = () => {
+  const host = "https://picta-backend.onrender.com/";
   const [creds, setCreds] = useState({
     name: "",
     email: "",
@@ -19,7 +20,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { name, email, username, phone, password } = creds;
-    const response = await fetch("http://localhost:3000/api/auth/createUser", {
+    const response = await fetch(`${host}/api/auth/createUser`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

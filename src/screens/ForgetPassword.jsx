@@ -6,7 +6,7 @@ const ForgetPassword = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
-  const host = 'http://localhost:3000';
+  const host = 'https://picta-backend.onrender.com/';
 
   const handleSubmit = async (e) => {
     e.preventDefault();

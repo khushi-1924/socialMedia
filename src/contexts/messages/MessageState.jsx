@@ -3,7 +3,7 @@ import MessageContext from "./MessageContext";
 import useConversation from "../../stateManagement/useConversation";
 
 const MessageState = (props) => {
-  const host = "http://localhost:3000";
+  const host = "https://picta-backend.onrender.com/";
   const [loading, setLoading] = useState(false);
   const { messages, setMessages, selectedConversation } = useConversation();
 

@@ -4,7 +4,7 @@ import UserContext from "../users/UserContext";
 
 const PostState = (props) => {
   const { user, targetUser } = useContext(UserContext);
-  const host = "http://localhost:3000";
+  const host = "https://picta-backend.onrender.com/";
 
   const postsInitial = [];
   const myPostsInitial = [];
