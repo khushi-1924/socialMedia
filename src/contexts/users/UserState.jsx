@@ -3,7 +3,7 @@ import UserContext from "./UserContext";
 import userImg from "../../assets/user.png"; // Import default image
 
 const UserState = (props) => {
-  const host = "https://picta-backend.onrender.com/";
+  const host = "https://picta-backend.onrender.com";
   const [user, setUser] = useState(null);
   const [users, setUsers] = useState([]);
   const [targetUser, setTargetUser] = useState(null);

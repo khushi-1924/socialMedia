@@ -5,7 +5,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 
 const Start = () => {
-  const host = "https://picta-backend.onrender.com/";
+  const host = "https://picta-backend.onrender.com";
   const [message, setMessage] = useState("");
   const [creds, setCreds] = useState({
     emailORusername: "",

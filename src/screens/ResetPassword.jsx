@@ -8,7 +8,7 @@ const ResetPassword = () => {
   const [passwordError, setPasswordError] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
-  const host = "https://picta-backend.onrender.com/";
+  const host = "https://picta-backend.onrender.com";
   const { id, token } = useParams();
 
   const handleSubmit = async (e) => {

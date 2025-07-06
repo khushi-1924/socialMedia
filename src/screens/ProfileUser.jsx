@@ -19,7 +19,7 @@ const ProfileUser = () => {
     "Whoever is happy will make others happy!";
 
   const [selectedPost, setSelectedPost] = useState(null);
-  const host = "https://picta-backend.onrender.com/";
+  const host = "https://picta-backend.onrender.com";
 
   const postClick = (post) => {
     setSelectedPost(post);

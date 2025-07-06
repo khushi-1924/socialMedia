@@ -6,7 +6,7 @@ import user from '../assets/user.png';
 import toast from "react-hot-toast";
 
 const Signup = () => {
-  const host = "https://picta-backend.onrender.com/";
+  const host = "https://picta-backend.onrender.com";
   const [creds, setCreds] = useState({
     name: "",
     email: "",
