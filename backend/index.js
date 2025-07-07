@@ -10,7 +10,13 @@ const { server, app } = require('./socketio/server');
 connectToMongo();
 app.use(express.urlencoded ({ extended: false }));
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:5173',                // for local development
+    'https://picta-dun.vercel.app'          // your deployed frontend on Vercel
+  ],
+  credentials: true,                        // if you ever use cookies or auth headers
+}));
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
 app.use ('/api/auth', require('./routes/auth'));

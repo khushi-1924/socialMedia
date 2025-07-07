@@ -7,7 +7,8 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: 'https://picta-dun.vercel.app',
+        origin: [
+            'http://localhost:5173', 'https://picta-dun.vercel.app'],
         methods: ['GET', 'POST'],
     }
 });
