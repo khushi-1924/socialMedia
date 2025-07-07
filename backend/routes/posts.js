@@ -153,7 +153,7 @@ router.get("/getUserPosts/:id", fetchUser, async (req, res) => {
         ? `data:${
             post.user.profilePic.contentType
           };base64,${post.user.profilePic.data.toString("base64")}`
-        : `http://localhost:3000/static/user.png`;
+        : `https://picta-backend.onrender.com/static/user.png`;
 
       return {
         ...post._doc,
